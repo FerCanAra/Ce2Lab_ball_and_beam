@@ -8,6 +8,7 @@ To improve measurement stability, a low-pass filter is applied to the distance r
 
 This project is designed as an educational platform for learning feedback control, PID tuning, and embedded system implementation using Arduino. It demonstrates fundamental control concepts such as system dynamics, sensor filtering, and real-time control.
 
+![image 9](https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a)
 
 ## License
 
@@ -35,44 +36,39 @@ AND ANY EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED.
 
 For the complete license text see the `LICENSE` file in this repository.
 
+## Model 1
 
+The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min
 
+### Prusa MK4 parameters, 0.4 nozzle
 
+- Layer height: 0.15 mm
+- First layer height: 0.2 mm
+- Infill: 5 %
+- Raft: No
+- Supports: Yes
+- Ironing: 15 mm/s
 
+### Printing material
 
-
-## Modelo 1
-
-- El tiempo total de impresión es: 7h 39min + 10h 28 min + 14h 54min + 1h 34min = 34h 35 min
-
-### Parámetros de prusa mk4, 04 nozzle
-- Altura capa: 0.15 mm
-- Altura 1º copa: 0.2 mm
-- Relleno: 5 %
-- Balsa: No
-- Soportes: Sí
-
-- Alisado: 15 mm/s
-
-### Material de impresión
 - PLA 1.75 mm
-- 215º extrusor
-- 60º cama
-- Consumo de PLA: 78.73 g + 102.63 g + 146.65 g + 13.52 g = 341.53 g (5 %)
+- Extruder temperature: 215 °C
+- Bed temperature: 60 °C
+- PLA consumption: 78.73 g + 102.63 g + 146.65 g + 13.52 g = 341.53 g (5%)
 
-### Material adicional
+### Additional material
 
-- 13 tornillos m4 allen
-- Silicona caliente
-
-- 1 x Arduino UNO: 16€
-- 1 x Motor sg90: 6 €
-- 1 x Rollo PLA: 19 €
-- 1 x HCSR04: 2.5 €
+- 13 × M4 Allen screws
+- Hot glue
+- 1 × Arduino UNO: 16 €
+- 1 × MG996r motor: 6 €
+- 1 × PLA roll: 19 €
+- 1 × HC-SR04: 2.5 €
 
 Total: 43.5 €
 
 ## References
 
 Code template: [AntonAshraf](https://github.com/AntonAshraf/Ball-Beam-PID-Control/tree/main)
+
 stl template: [OlegKor25](https://www.thingiverse.com/thing:6387659)
