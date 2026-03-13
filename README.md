@@ -33,3 +33,10 @@ El tiempo total de impresión son 25 h 55 mi en:
 - Altura 1º copa: 0.2 mm
 - PLA 1.75 mm
 - Consumo de PLA: 698 g
+
+
+
+
+
+
+https://github.com/AntonAshraf/Ball-Beam-PID-Control/tree/main
