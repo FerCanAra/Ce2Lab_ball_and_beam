@@ -8,9 +8,6 @@ To improve measurement stability, a low-pass filter is applied to the distance r
 
 This project is designed as an educational platform for learning feedback control, PID tuning, and embedded system implementation using Arduino. It demonstrates fundamental control concepts such as system dynamics, sensor filtering, and real-time control.
 
-<img width="600" height="800" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
-
-
 ## License
 
 This project is licensed under the **BSD 3-Clause License**.
@@ -40,6 +37,10 @@ For the complete license text see the `LICENSE` file in this repository.
 ## Model 1
 
 The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min
+
+<img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
+
+<img width="300" height="800" alt="BaB2" src="https://github.com/user-attachments/assets/e5d24955-c800-4a89-889a-9a6d86ae6a10" />
 
 ### Prusa MK4 parameters, 0.4 nozzle
 
