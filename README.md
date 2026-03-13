@@ -8,7 +8,7 @@ To improve measurement stability, a low-pass filter is applied to the distance r
 
 This project is designed as an educational platform for learning feedback control, PID tuning, and embedded system implementation using Arduino. It demonstrates fundamental control concepts such as system dynamics, sensor filtering, and real-time control.
 
-<img width="600" height="300" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
+<img width="600" height="600" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
 
 
 ## License
