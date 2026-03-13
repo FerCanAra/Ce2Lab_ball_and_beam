@@ -36,7 +36,7 @@ El tiempo total de impresión son 25 h 55 mi en:
 
 
 
+## References
 
-
-
-https://github.com/AntonAshraf/Ball-Beam-PID-Control/tree/main
+Code template: [AntonAshraf](https://github.com/AntonAshraf/Ball-Beam-PID-Control/tree/main)
+stl template: [OlegKor25](https://www.thingiverse.com/thing:6387659)
