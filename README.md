@@ -38,9 +38,10 @@ For the complete license text see the `LICENSE` file in this repository.
 
 The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min
 
-<img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
+<img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/0b478695-70eb-4f1b-a262-d0cf5de59f08" /> <img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
 
-<img width="300" height="800" alt="BaB2" src="https://github.com/user-attachments/assets/e5d24955-c800-4a89-889a-9a6d86ae6a10" />
+
+
 
 ### Prusa MK4 parameters, 0.4 nozzle
 
