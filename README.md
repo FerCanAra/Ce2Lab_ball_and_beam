@@ -65,10 +65,12 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 - Hot glue
 - 1 × Arduino UNO: 16 €
 - 1 × MG996r motor: 6 €
-- 1 × PLA roll: 19 €
+- 1 × 341.53 g of PLA roll: 6.48 € 
 - 1 × HC-SR04: 2.5 €
+  
+- 1 × VL53L0X: 1.0 €
 
-Total: 43.5 €
+Total: 30.90 €
 
 ## References
 
