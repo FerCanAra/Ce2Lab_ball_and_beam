@@ -78,7 +78,7 @@ Total cost: 29.50 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-<img width="1254" height="827" alt="image" src="https://github.com/user-attachments/assets/5f48d207-ade1-41e5-99ef-6bd738ef88f4" />
+![Demo](https://github.com/user-attachments/assets/5f48d207-ade1-41e5-99ef-6bd738ef88f4)
 
 </details>
 
