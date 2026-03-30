@@ -38,7 +38,7 @@ For the complete license text see the `LICENSE` file in this repository.
 
 A “Ball and Beam” with its support in the center:
 
-<img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/0b478695-70eb-4f1b-a262-d0cf5de59f08" /> <img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
+https://github.com/user-attachments/assets/f47009bc-9860-4b77-a210-59d419db939c
 
 <details>
 <summary>1. Materials</summary>
