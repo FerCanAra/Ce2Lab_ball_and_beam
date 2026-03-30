@@ -2,40 +2,14 @@
 
 The Ball and Beam system is a classic experiment widely used in control engineering to study feedback control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a control action to a servo motor that tilts the beam.
 
-<img width="480" height="150" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
- <img width="480" height="240" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
+<img width="300" height="150" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
+ <img width="300" height="150" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
 
 In this project, an Arduino-based implementation of the Ball and Beam system is developed using an ultrasonic sensor to measure the ball position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination so that the ball remains close to the desired target position.
 
 To improve measurement stability, a low-pass filter is applied to the distance readings obtained from the ultrasonic sensor. This helps reduce noise and produces smoother control actions. The system operates in a closed-loop configuration where the controller continuously compares the desired position (setpoint) with the measured position and corrects the error.
 
 This project is designed as an educational platform for learning feedback control, PID tuning, and embedded system implementation using Arduino. It demonstrates fundamental control concepts such as system dynamics, sensor filtering, and real-time control.
-
-## License
-
-This project is licensed under the **BSD 3-Clause License**.
-
-Copyright (c) 2026, Fernando Cañadas Aránega and Enrique Rodriguez Miranda  
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holders nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED.
-
-For the complete license text see the `LICENSE` file in this repository.
 
 ## Model 1
 
@@ -130,6 +104,31 @@ Total: 29.5 €
 
 </details>
 
+## License
+
+This project is licensed under the **BSD 3-Clause License**.
+
+Copyright (c) 2026, Fernando Cañadas Aránega, Enrique Rodríguez Miranda and José Luis Guzmán Sánchez
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holders nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED.
+
+For the complete license text see the `LICENSE` file in this repository.
 
 ## References
 
