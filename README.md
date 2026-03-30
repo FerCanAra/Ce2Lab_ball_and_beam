@@ -55,7 +55,7 @@ Total cost: 29.50 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-<img width="716" height="480" alt="image" src="https://github.com/user-attachments/assets/b7b50655-f882-4cb7-bf3b-aca8b3586b8e" />
+
 
 </details>
 
@@ -67,7 +67,7 @@ A “ball-and-beam” structure supported at one end (with the same model at the
 <summary>1. Materials</summary>
 
 ### Prusa MK4 parameters, 0.4 nozzle
-The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min
+The total printing time is: 12 h 27 min
 - Layer height: 0.15 mm
 - First layer height: 0.2 mm
 - Infill: 5 %
@@ -80,7 +80,7 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 - PLA 1.75 mm
 - Extruder temperature: 215 °C
 - Bed temperature: 60 °C
-- PLA consumption: 78.73 g + 102.63 g + 146.65 g + 13.52 g = 341.53 g (5%)
+- PLA consumption: 112.5 g (5%)
 
 ### Additional material
 
@@ -90,17 +90,19 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 - 1 x 7 mm hollow aluminum rod: 2 € 
 - 1 × Arduino UNO: 16 €
 - 1 × MG996r motor: 6 €
-- 1 × 341.53 g of PLA roll: 6.48 € 
+- 1 × 112.2 g of PLA roll: 2.20 € 
 - 1 × HC-SR04: 2.5 €
 
-Total: 29.5 €
+Total: 28.7 €
 
 </details>
-
 
 <details>
 <summary>2. Assembly</summary>
 
+If you're reusing the code, try connecting everything as shown in the image below:
+
+<img width="716" height="480" alt="image" src="https://github.com/user-attachments/assets/b7b50655-f882-4cb7-bf3b-aca8b3586b8e" />
 
 </details>
 
