@@ -2,8 +2,8 @@
 
 The Ball and Beam system is a classic experiment widely used in control engineering to study feedback control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a control action to a servo motor that tilts the beam.
 
-<img width="650" height="300" alt="image" src="https://github.com/user-attachments/assets/521a8ea7-6613-4c6f-b529-37efda4dbe8c" /> <img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
-
+<img width="480" height="150" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
+ <img width="480" height="240" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
 
 In this project, an Arduino-based implementation of the Ball and Beam system is developed using an ultrasonic sensor to measure the ball position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination so that the ball remains close to the desired target position.
 
