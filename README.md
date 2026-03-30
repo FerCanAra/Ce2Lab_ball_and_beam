@@ -108,10 +108,8 @@ If you're reusing the code, try connecting everything as shown in the image belo
 
 ## License
 
-This project is licensed under the **BSD 3-Clause License**.
-
 <details>
-<summary>Details</summary>
+<summary>This project is licensed under the **BSD 3-Clause License**.</summary>
 
 Copyright (c) 2026, Fernando Cañadas Aránega, Enrique Rodríguez Miranda and José Luis Guzmán Sánchez
 
