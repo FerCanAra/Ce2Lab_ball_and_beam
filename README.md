@@ -36,15 +36,16 @@ For the complete license text see the `LICENSE` file in this repository.
 
 ## Model 1
 
-The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min
+A “Ball and Beam” with its support in the center:
 
 <img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/0b478695-70eb-4f1b-a262-d0cf5de59f08" /> <img width="300" height="800" alt="BaB" src="https://github.com/user-attachments/assets/a4922a7e-7e42-416d-8d13-e2f851a03b7a" />
 
-
-
+<details>
+<summary>1. Materials</summary>
 
 ### Prusa MK4 parameters, 0.4 nozzle
 
+The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min. Parameters:
 - Layer height: 0.15 mm
 - First layer height: 0.2 mm
 - Infill: 5 %
@@ -65,12 +66,67 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 - Hot glue
 - 1 × Arduino UNO: 16 €
 - 1 × MG996r motor: 6 €
-- 1 × 341.53 g of PLA roll: 6.48 € 
-- 1 × HC-SR04: 2.5 €
-  
+- 1 × 341.53 g of PLA roll: 6.50 € 
 - 1 × VL53L0X: 1.0 €
 
-Total: 30.90 €
+Total cost: 29.50 €
+
+</details>
+
+<details>
+<summary>2. Assembly</summary>
+
+If you're reusing the code, try connecting everything as shown in the image below:
+
+<img width="1254" height="827" alt="image" src="https://github.com/user-attachments/assets/5f48d207-ade1-41e5-99ef-6bd738ef88f4" />
+
+</details>
+
+## Model 2
+
+A “ball-and-beam” structure supported at one end (with the same model at the other end)
+
+<details>
+<summary>1. Materials</summary>
+
+### Prusa MK4 parameters, 0.4 nozzle
+The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min
+- Layer height: 0.15 mm
+- First layer height: 0.2 mm
+- Infill: 5 %
+- Raft: No
+- Supports: Yes
+- Ironing: 15 mm/s
+
+### Printing material
+
+- PLA 1.75 mm
+- Extruder temperature: 215 °C
+- Bed temperature: 60 °C
+- PLA consumption: 78.73 g + 102.63 g + 146.65 g + 13.52 g = 341.53 g (5%)
+
+### Additional material
+
+- 4 × M4 1 cm Allen screws
+- 2 x M4 15 cm Allen screws
+- 5 x M4 washers
+- 1 x 7 mm hollow aluminum rod: 2 € 
+- 1 × Arduino UNO: 16 €
+- 1 × MG996r motor: 6 €
+- 1 × 341.53 g of PLA roll: 6.48 € 
+- 1 × HC-SR04: 2.5 €
+
+Total: 29.5 €
+
+</details>
+
+
+<details>
+<summary>2. Assembly</summary>
+
+
+</details>
+
 
 ## References
 
