@@ -38,7 +38,7 @@ For the complete license text see the `LICENSE` file in this repository.
 
 A “Ball and Beam” with its support in the center:
 
-![Demo](docs/model_11.gif)
+<img src="docs/model_11.gif" width="600">
 
 <details>
 <summary>1. Materials</summary>
