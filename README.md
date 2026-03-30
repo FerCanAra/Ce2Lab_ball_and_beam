@@ -38,7 +38,7 @@ For the complete license text see the `LICENSE` file in this repository.
 
 A “Ball and Beam” with its support in the center:
 
-https://github.com/user-attachments/assets/f47009bc-9860-4b77-a210-59d419db939c
+![Demo](https://github.com/user-attachments/assets/5f48d207-ade1-41e5-99ef-6bd738ef88f4)
 
 <details>
 <summary>1. Materials</summary>
@@ -78,7 +78,7 @@ Total cost: 29.50 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-![Demo](https://github.com/user-attachments/assets/5f48d207-ade1-41e5-99ef-6bd738ef88f4)
+<img width="716" height="480" alt="image" src="https://github.com/user-attachments/assets/b7b50655-f882-4cb7-bf3b-aca8b3586b8e" />
 
 </details>
 
