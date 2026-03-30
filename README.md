@@ -110,7 +110,11 @@ If you're reusing the code, try connecting everything as shown in the image belo
 
 This project is licensed under the **BSD 3-Clause License**.
 
+<details>
+<summary>Details</summary>
+
 Copyright (c) 2026, Fernando Cañadas Aránega, Enrique Rodríguez Miranda and José Luis Guzmán Sánchez
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -131,6 +135,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED.
 
 For the complete license text see the `LICENSE` file in this repository.
+</details>
+
+## Contributor
+
+[Fernando Cañadas Aránega](linktr.ee/FerCanAra)
+Enrique Rodríguez Miranda
+[Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/)
+Juan Diego Gil Vergel
+Jose González Hernandez
+Igor Mendes Lima Pataro
+
 
 ## References
 
