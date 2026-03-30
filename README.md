@@ -139,11 +139,16 @@ For the complete license text see the `LICENSE` file in this repository.
 
 ## Contributor
 
-[Fernando Cañadas Aránega](linktr.ee/FerCanAra)
+[Fernando Cañadas Aránega](https://linktr.ee/fercanara)
+
 Enrique Rodríguez Miranda
+
 [Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/)
+
 Juan Diego Gil Vergel
+
 Jose González Hernandez
+
 Igor Mendes Lima Pataro
 
 
