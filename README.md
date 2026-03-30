@@ -55,7 +55,7 @@ Total cost: 29.50 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-
+<img width="1075" height="725" alt="image" src="https://github.com/user-attachments/assets/6c240c90-e37e-4bd2-9243-f2fb357a2827" />
 
 </details>
 
@@ -102,7 +102,7 @@ Total: 28.7 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-<img width="716" height="480" alt="image" src="https://github.com/user-attachments/assets/b7b50655-f882-4cb7-bf3b-aca8b3586b8e" />
+<img width="1088" height="724" alt="image" src="https://github.com/user-attachments/assets/6422b65a-0913-4173-85a9-4804b4280de7" />
 
 </details>
 
