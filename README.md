@@ -1,6 +1,6 @@
 # Ce2Lab - Ball and Beam
 
-The Ball and Beam system is a classic experiment widely used in control engineering to study feedback control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a control action to a servo motor that tilts the beam.
+The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a control action to a servo motor that tilts the beam.
 
 <img width="350" height="250" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
  <img width="350" height="200" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
