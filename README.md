@@ -18,7 +18,7 @@ A “Ball and Beam” with its support in the center:
 <img src="docs/model_11.gif" width="300">
 
 <details>
-<summary>1. Materials</summary>
+<summary>1. Materials and cost</summary>
 
 ### Prusa MK4 parameters, 0.4 nozzle
 
@@ -64,7 +64,7 @@ If you're reusing the code, try connecting everything as shown in the image belo
 A “ball-and-beam” structure supported at one end (with the same model at the other end)
 
 <details>
-<summary>1. Materials</summary>
+<summary>1. Materials and cost</summary>
 
 ### Prusa MK4 parameters, 0.4 nozzle
 The total printing time is: 12 h 27 min
