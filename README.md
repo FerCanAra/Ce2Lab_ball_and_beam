@@ -10,7 +10,7 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
 
 <a href="[https://arm.ual.es/arm-group/]"> <img src="docs/arm-logo2.jpg" width="150" /> </a>  <a href="[https://www.linkedin.com/company/automatic-robotics-and-mechatronics-research-group/]">  <img src="docs/logo2.png" width="55" /> </a>
 
-> **Note:** Process tested with Windows 11 on 8th April 2026.
+> **Note:** Process tested with Windows 11 with PlatformIO (VSC) on 8th April 2026.
 
 ## Model 1
 
