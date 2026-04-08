@@ -1,15 +1,18 @@
 # Ce2Lab - Ball and Beam
 
-The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a control action to a servo motor that tilts the beam.
+The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a PID control action to a servo motor that tilts the beam.
 
 <img width="350" height="250" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
  <img width="350" height="200" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
 
-In this project, an Arduino-based implementation of the Ball and Beam system is developed using an ultrasonic sensor to measure the ball position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination so that the ball remains close to the desired target position.
+In this project, a different ATmega328P-based implementation of the Ball and Beam system is developed, using an ultrasonic and laser sensors to measure the ball's position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination, keeping the ball close to the desired target position.
 
-To improve measurement stability, a low-pass filter is applied to the distance readings obtained from the ultrasonic sensor. This helps reduce noise and produces smoother control actions. The system operates in a closed-loop configuration where the controller continuously compares the desired position (setpoint) with the measured position and corrects the error.
+This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
 
-This project is designed as an educational platform for learning feedback control, PID tuning, and embedded system implementation using Arduino. It demonstrates fundamental control concepts such as system dynamics, sensor filtering, and real-time control.
+*ARM Group LinkedIn: https://www.linkedin.com/company/automatic-robotics-and-mechatronics-research-group/*
+*ARM Group Github: https://github.com/ual-arm*
+
+> **Note:** Process tested with Windows 11 on 8th April 2026.
 
 ## Model 1
 
@@ -20,9 +23,9 @@ A “Ball and Beam” with its support in the center:
 <details>
 <summary>1. Materials and cost</summary>
 
-### Prusa MK4 parameters, 0.4 nozzle
+### 3D printing of parts
 
-The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min. Parameters:
+A Prusa MK4 (0.4 mm nozzle) printer was used. The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min. Parameters:
 - Layer height: 0.15 mm
 - First layer height: 0.2 mm
 - Infill: 5 %
@@ -30,7 +33,7 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 - Supports: Yes
 - Ironing: 15 mm/s
 
-### Printing material
+Printing material:
 
 - PLA 1.75 mm
 - Extruder temperature: 215 °C
@@ -39,9 +42,13 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 
 ### Additional material
 
+Mechanical components:
 - 12 × M4 Allen screws
 - 7 x Jumper Wire 
 - 1 x Hot glue
+- 1 x Ping-pong ball
+
+Electronic components:
 - 1 × ATMega328P (Microcontroller socket board): 10 €
 - 1 × MG996r motor: 6 €
 - 1 × 341.53 g of PLA roll: 6.50 € (19€/kg)
@@ -66,11 +73,15 @@ If you're reusing the code, try connecting everything as shown in the image belo
 
 A “ball-and-beam” structure supported at one end (with the same model at the other end)
 
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/04ab0e3c-d0b1-4b11-b1e4-189716760efb" />
+
+
 <details>
 <summary>1. Materials and cost</summary>
 
-### Prusa MK4 parameters, 0.4 nozzle
-The total printing time is: 12 h 27 min
+### 3D printing of parts
+
+A Prusa MK4 (0.4 mm nozzle) printer was used. The total printing time is: 12 h 27 min
 - Layer height: 0.15 mm
 - First layer height: 0.2 mm
 - Infill: 5 %
@@ -78,7 +89,7 @@ The total printing time is: 12 h 27 min
 - Supports: Yes
 - Ironing: 15 mm/s
 
-### Printing material
+Printing material
 
 - PLA 1.75 mm
 - Extruder temperature: 215 °C
@@ -87,10 +98,13 @@ The total printing time is: 12 h 27 min
 
 ### Additional material
 
+Mechanical components:
 - 3 × M4 1 cm Allen screws
 - 2 x M2 8 cm Allen screws
 - 2 x M2 washers
-- 1 x 7 mm hollow aluminum rod: 2 € 
+- 1 x 7 mm hollow aluminum rod: 2 €
+
+Electronic components:
 - 1 × ATMega328P (Microcontroller SMD board): 3.3 €
 - 1 × MG996r motor: 6 €
 - 1 × 112.2 g of PLA roll: 2.20 € (19€/kg)
@@ -150,6 +164,10 @@ Jose González Hernandez and
 Igor Mendes Lima Pataro.
 
 _University of Almería, Department of Computer Science, CIESOL, ceia3, Ctra. Sacramento s/n, 04120, Almería, Spain._
+
+## Acknowledgements
+
+This work has been funded by the Project "Unlocking the Development and Experiences of Control Education Labs (CE2Labs)".
 
 ## References
 
