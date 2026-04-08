@@ -39,14 +39,17 @@ The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35
 
 ### Additional material
 
-- 13 × M4 Allen screws
-- Hot glue
-- 1 × Arduino UNO: 16 €
+- 12 × M4 Allen screws
+- 7 x Jumper Wire 
+- 1 x Hot glue
+- 1 × ATMega328P (Microcontroller socket board): 10 €
 - 1 × MG996r motor: 6 €
-- 1 × 341.53 g of PLA roll: 6.50 € 
+- 1 × 341.53 g of PLA roll: 6.50 € (19€/kg)
 - 1 × VL53L0X: 1.0 €
 
-Total cost: 29.50 €
+### Cost per prototype
+
+Total cost: 23.50 €
 
 </details>
 
@@ -84,16 +87,18 @@ The total printing time is: 12 h 27 min
 
 ### Additional material
 
-- 4 × M4 1 cm Allen screws
-- 2 x M4 15 cm Allen screws
-- 5 x M4 washers
+- 3 × M4 1 cm Allen screws
+- 2 x M2 8 cm Allen screws
+- 2 x M2 washers
 - 1 x 7 mm hollow aluminum rod: 2 € 
-- 1 × Arduino UNO: 16 €
+- 1 × ATMega328P (Microcontroller SMD board): 3.3 €
 - 1 × MG996r motor: 6 €
-- 1 × 112.2 g of PLA roll: 2.20 € 
+- 1 × 112.2 g of PLA roll: 2.20 € (19€/kg)
 - 1 × HC-SR04: 2.5 €
 
-Total: 28.7 €
+### Cost per prototype
+
+Total: 16 €
 
 </details>
 
