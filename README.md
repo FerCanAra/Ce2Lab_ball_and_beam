@@ -120,7 +120,7 @@ Total: 16 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-<img width="1088" height="724" alt="image" src="https://github.com/user-attachments/assets/6422b65a-0913-4173-85a9-4804b4280de7" />
+<img width="1069" height="713" alt="image" src="https://github.com/user-attachments/assets/cacfbd85-adf3-474e-af8e-c5bcedb8a1e6" />
 
 </details>
 
