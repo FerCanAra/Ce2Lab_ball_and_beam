@@ -8,7 +8,7 @@ In this project, a different ATmega328P-based implementation of the Ball and Bea
 
 This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
 
-<a href="[https://arm.ual.es/arm-group/]"> <img src="docs/arm-logo2.jpg" width="150" /> </a>  <a href="[https://www.linkedin.com/company/automatic-robotics-and-mechatronics-research-group/]">  <img src="docs/logo2.png" width="60" /> </a>
+<a href="[https://arm.ual.es/arm-group/]"> <img src="docs/arm-logo2.jpg" width="150" /> </a>  <a href="[https://www.linkedin.com/company/automatic-robotics-and-mechatronics-research-group/]">  <img src="docs/logo2.png" width="55" /> </a>
 
 > **Note:** Process tested with Windows 11 on 8th April 2026.
 
