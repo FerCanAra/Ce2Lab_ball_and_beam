@@ -21,7 +21,7 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
 
 A “Ball and Beam” with its support in the center:
 
-<img width="350" height="250" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
+<img width="300" height="250" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
 <img width="350" height="250" alt="image3" src="https://github.com/user-attachments/assets/433cabf5-895e-41f3-8665-33afc534b4ba" />
 
 <details>
