@@ -134,7 +134,7 @@ If you're reusing the code, try connecting everything as shown in the image belo
 <details>
 <summary>This project is licensed under the **BSD 3-Clause License**.</summary>
 
-Copyright (c) 2026, Fernando Cañadas Aránega, Enrique Rodríguez Miranda and José Luis Guzmán Sánchez
+Copyright (c) 2026, Fernando Cañadas Aránega, Igor Mendes Lima Pataro, Enrique Rodríguez Miranda, José Luis Guzmán Sánchez and Juan Diego Gil Vergel.
 
 All rights reserved.
 
@@ -161,11 +161,11 @@ For the complete license text see the `LICENSE` file in this repository.
 ## Contributor
 
 [Fernando Cañadas Aránega](https://linktr.ee/fercanara), 
+Igor Mendes Lima Pataro,
 Enrique Rodríguez Miranda, 
-[Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/), 
-Juan Diego Gil Vergel, 
-Jose González Hernandez and
-Igor Mendes Lima Pataro.
+[Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/) and
+Juan Diego Gil Vergel.
+
 
 _University of Almería, Department of Computer Science, CIESOL, ceia3, Ctra. Sacramento s/n, 04120, Almería, Spain._
 
