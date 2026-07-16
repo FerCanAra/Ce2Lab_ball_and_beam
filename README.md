@@ -69,63 +69,7 @@ Total cost: 23.50 €
 
 If you're reusing the code, try connecting everything as shown in the image below:
 
-<img width="1075" height="725" alt="image" src="https://github.com/user-attachments/assets/6c240c90-e37e-4bd2-9243-f2fb357a2827" />
-
-</details>
-
-## Model 2
-
-A “ball-and-beam” structure supported at one end (with the same model at the other end)
-
-<img width="350" height="250" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
-<img width="350" height="250" alt="image" src="https://github.com/user-attachments/assets/0f6acd55-1337-4300-8132-cff81ce212e4" />
-
-<details>
-<summary>1. Materials and cost</summary>
-
-### 3D printing of parts
-
-A Prusa MK4 (0.4 mm nozzle) printer was used. The total printing time is: 12 h 27 min
-- Layer height: 0.15 mm
-- First layer height: 0.2 mm
-- Infill: 5 %
-- Raft: No
-- Supports: Yes
-- Ironing: 15 mm/s
-
-Printing material
-
-- PLA 1.75 mm
-- Extruder temperature: 215 °C
-- Bed temperature: 60 °C
-- PLA consumption: 112.5 g (5%)
-
-### Additional material
-
-Mechanical components:
-- 3 × M4 1 cm Allen screws
-- 2 x M2 8 cm Allen screws
-- 2 x M2 washers
-- 1 x 7 mm hollow aluminum rod: 2 €
-
-Electronic components:
-- 1 × ATMega328P (Microcontroller SMD board): 3.3 €
-- 1 × MG996r motor: 6 €
-- 1 × 112.2 g of PLA roll: 2.20 € (19€/kg)
-- 1 × HC-SR04: 2.5 €
-
-### Cost per prototype
-
-Total: 16 €
-
-</details>
-
-<details>
-<summary>2. Assembly</summary>
-
-If you're reusing the code, try connecting everything as shown in the image below:
-
-<img width="1069" height="713" alt="image" src="https://github.com/user-attachments/assets/cacfbd85-adf3-474e-af8e-c5bcedb8a1e6" />
+<img width="460" height="315" alt="Conexion_2 (1)" src="https://github.com/user-attachments/assets/bbdf47e4-707b-4e8d-b99d-7b35124cfb7c" />
 
 </details>
 
