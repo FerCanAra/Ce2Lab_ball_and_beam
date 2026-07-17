@@ -108,7 +108,7 @@ For the complete license text see the `LICENSE` file in this repository.
 Igor Mendes Lima Pataro,
 Enrique Rodríguez Miranda, 
 [Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/) and
-Juan Diego Gil Vergel.
+[Juan Diego Gil Vergel](https://w3.ual.es/personal/jgv132/).
 
 
 _University of Almería, Department of Computer Science, CIESOL, ceia3, Ctra. Sacramento s/n, 04120, Almería, Spain._
