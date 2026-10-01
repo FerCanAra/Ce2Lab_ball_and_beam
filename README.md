@@ -6,6 +6,8 @@
 
 The shortage of physical lab models in university control engineering laboratories is a widely recognized problem at theinternational level. In response to this challenge, this paper presents CE2Labs (Unlocking the Development and Experiences ofControl Education Labs), a teaching innovation project funded by theIFAC Activity Fundand developed by an internationalteam of educators and laboratory engineers from universities in Spain, Sweden, France, Germany, and the United Kingdom.The project proposes the design and construction of low-cost, open-source physical lab models at different levels of complexity,ranging from 3D-printed mechanical devices to Arduino-based and custom electronics solutions, as well as the developmentof an open-access web platform where educators worldwide can access the materials and share experiences.
 
+<img src="docs/Model_1_1.gif" width="350">
+
 Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more information. This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
 
 <a href="https://arm.ual.es/arm-group/"> 
@@ -60,184 +62,15 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
 
 ## Ce2Lab - CE2Lab Watt Governor
 
-This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use.
+This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use. The objective of the model is to provide a **visual and intuitive demonstration** of how a centrifugal governor works. By rotating the central shaft manually, the user can observe how the rotating masses move outward as the rotational speed increases, causing the central collar to move vertically.
 
-The purpose of the model is to provide a **visual and intuitive demonstration** of how a centrifugal governor works. By rotating the central shaft manually, the user can observe how the rotating masses move outward as the rotational speed increases, causing the central collar to move vertically.
-
-The model is intended to help explain the balance between centrifugal effects and gravity, as well as the influence of mechanical parameters such as the **mass of the balls** and the **length of the arms**.
-
-<details>
-<summary>1. Materials and cost</summary>
-
-### STL files to print
-
-To assemble one complete model, print:
-
-- 2 × `Ball.stl`
-- 2 × `Bal_2.stl`
-- 1 × `Base.stl`
-- 1 × `Slider.stl`
-- 1 × `Knob.stl`
-- 1 × `Top.stl`
-- 1 × `Collar.stl`
-- 1 × `Dial.stl`
-- 2 × `Arm_couple.stl`
-- 2 × `Arm.stl`
-
-## Additional hardware
-
-The following non-printed components are required:
-
-- 6 × M3×20 screws
-- 1 x 8 mm aluminium rod
-- Hot glue
-- 1 × 623Z bearing
-- 1 × 608Z bearing
-- Hot glue
-
-## Tool
-- Hot glue gun
-- Steel saw
-- Screwdriver
-
-### Cost per prototype
-
-Total cost: 10.50 €
-
-</details>
-
-<details>
-<summary>2. Notes</summary>
-
-The demonstrator is designed primarily as a **visual and interpretative teaching aid** rather than as an instrumented control experiment. No motor or rotational-speed sensor is required for the basic activity.
-
-</details>
-
+Go to [official site](Watt%20Governor/Readme.md) for full details on the complete project.
 
 ## Ce2Lab - Ball and Beam
 
 The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a PID control action to a servo motor that tilts the beam.
 
-<img src="docs/Model_1_1.gif" width="350"> <img src="docs/Model_2_1.gif" width="350">
-
-In this project, a different ATmega328P-based implementation of the Ball and Beam system is developed, using an ultrasonic and laser sensors to measure the ball's position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination, keeping the ball close to the desired target position.
-
-> **Note:** Process tested with Windows 11 with PlatformIO (VSC) on 8th April 2026.
-
-<details>
-<summary>Model 1</summary>
-
-A “Ball and Beam” with its support in the center:
-
-<img width="400" height="250" alt="image-removebg-preview" src="https://github.com/user-attachments/assets/bf39def6-bd84-40d3-ad63-c261d27a0a88" />
-<img width="350" height="250" alt="image3" src="https://github.com/user-attachments/assets/433cabf5-895e-41f3-8665-33afc534b4ba" />
-
-<details>
-<summary>1. Materials and cost</summary>
-
-### 3D printing of parts
-
-A Prusa MK4 (0.4 mm nozzle) printer was used. The total printing time is: 7h 39min + 10h 28min + 14h 54min + 1h 34min = 34h 35 min. Parameters:
-- Layer height: 0.15 mm
-- First layer height: 0.2 mm
-- Infill: 5 %
-- Raft: No
-- Supports: Yes
-- Ironing: 15 mm/s
-
-Printing material:
-
-- PLA 1.75 mm
-- Extruder temperature: 215 °C
-- Bed temperature: 60 °C
-- PLA consumption: 78.73 g + 102.63 g + 146.65 g + 13.52 g = 341.53 g (5%)
-
-### Additional material
-
-Mechanical components:
-- 12 × M4 Allen screws
-- 7 x Jumper Wire 
-- 1 x Hot glue
-- 1 x Ping-pong ball
-
-Electronic components:
-- 1 × ATMega328P (Microcontroller socket board): 10 €
-- 1 × MG996r motor: 6 €
-- 1 × 341.53 g of PLA roll: 6.50 € (19€/kg)
-- 1 × VL53L0X: 1.0 €
-
-### Cost per prototype
-
-Total cost: 23.50 €
-
-</details>
-
-<details>
-<summary>2. Assembly</summary>
-
-If you're reusing the code, try connecting everything as shown in the image below:
-
-<img width="1075" height="725" alt="image" src="https://github.com/user-attachments/assets/6c240c90-e37e-4bd2-9243-f2fb357a2827" />
-
-</details>
-</details>
-<details>
-<summary>Model 2</summary>
-
-A “ball-and-beam” structure supported at one end (with the same model at the other end)
-
-<img width="350" height="250" alt="image22" src="https://github.com/user-attachments/assets/c8edad74-4b39-4ef2-a2e2-66cdb578f460" />
-<img width="350" height="250" alt="image" src="https://github.com/user-attachments/assets/0f6acd55-1337-4300-8132-cff81ce212e4" />
-
-<details>
-<summary>1. Materials and cost</summary>
-
-### 3D printing of parts
-
-A Prusa MK4 (0.4 mm nozzle) printer was used. The total printing time is: 12 h 27 min
-- Layer height: 0.15 mm
-- First layer height: 0.2 mm
-- Infill: 5 %
-- Raft: No
-- Supports: Yes
-- Ironing: 15 mm/s
-
-Printing material
-
-- PLA 1.75 mm
-- Extruder temperature: 215 °C
-- Bed temperature: 60 °C
-- PLA consumption: 112.5 g (5%)
-
-### Additional material
-
-Mechanical components:
-- 3 × M4 1 cm Allen screws
-- 2 x M2 8 cm Allen screws
-- 2 x M2 washers
-- 1 x 7 mm hollow aluminum rod: 2 €
-
-Electronic components:
-- 1 × ATMega328P (Microcontroller SMD board): 3.3 €
-- 1 × MG996r motor: 6 €
-- 1 × 112.2 g of PLA roll: 2.20 € (19€/kg)
-- 1 × HC-SR04: 2.5 €
-
-### Cost per prototype
-
-Total: 16 €
-
-</details>
-
-<details>
-<summary>2. Assembly</summary>
-
-If you're reusing the code, try connecting everything as shown in the image below:
-
-<img width="1069" height="713" alt="image" src="https://github.com/user-attachments/assets/cacfbd85-adf3-474e-af8e-c5bcedb8a1e6" />
-
-</details>
-</details>
+Go to [official site](Ball%20and%20Beam/Readme.md) for full details on the complete project.
 
 ## License
 
