@@ -1,4 +1,4 @@
-## Ce2Lab - CE2Lab Watt Governor
+## Ce2Lab - Watt Governor
 
 This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use.
 
