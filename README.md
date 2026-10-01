@@ -55,7 +55,7 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
 }
 ```
 
-## Ce2Lab - CE2Lab Watt Governor
+## Ce2Lab - Watt Governor
 
 This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use. The objective of the model is to provide a **visual and intuitive demonstration** of how a centrifugal governor works. By rotating the central shaft manually, the user can observe how the rotating masses move outward as the rotational speed increases, causing the central collar to move vertically.
 
