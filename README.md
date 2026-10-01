@@ -1,8 +1,7 @@
 # Ce2Lab Project
-======================================
 
 [![Last Updated](https://img.shields.io/badge/last%20updated-2026--09-blue)](.)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22679881.svg)](https://doi.org/10.5281/zenodo.22679881)
+[![DOI](https://doi.org/10.5281/zenodo.23079949)](https://doi.org/10.5281/zenodo.23079949)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
 The shortage of physical lab models in university control engineering laboratories is a widely recognized problem at theinternational level. In response to this challenge, this paper presents CE2Labs (Unlocking the Development and Experiences ofControl Education Labs), a teaching innovation project funded by theIFAC Activity Fundand developed by an internationalteam of educators and laboratory engineers from universities in Spain, Sweden, France, Germany, and the United Kingdom.The project proposes the design and construction of low-cost, open-source physical lab models at different levels of complexity,ranging from 3D-printed mechanical devices to Arduino-based and custom electronics solutions, as well as the developmentof an open-access web platform where educators worldwide can access the materials and share experiences
