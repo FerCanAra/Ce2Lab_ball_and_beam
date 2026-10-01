@@ -19,8 +19,7 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
 
 ## 📑 Citation
 
-<details>
-<summary>Project article</summary>
+**_Project article_**
 
 ```
 @article{sanchez2026democratizando,
@@ -31,9 +30,8 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   year={2026}
 }
 ```
-</details>
-<details>
-<summary>Ball and beam article</summary>
+
+**_Ball and beam article_**
 
 ```
 @article{aranega2026plataforma,
@@ -44,9 +42,7 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   year={2026}
 }
 ```
-</details>
-<details>
-<summary>Software citation</summary>
+**_Software citation_**
   
 ```
 @software{c2d_project,
@@ -58,19 +54,18 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   url     = {https://github.com/FerCanAra/Ce2Lab_ball_and_beam/tree/main}
 }
 ```
-</details>
 
 ## Ce2Lab - CE2Lab Watt Governor
 
 This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use. The objective of the model is to provide a **visual and intuitive demonstration** of how a centrifugal governor works. By rotating the central shaft manually, the user can observe how the rotating masses move outward as the rotational speed increases, causing the central collar to move vertically.
 
-Go to [official site](Watt%20Governor/Readme.md) for full details on the complete project.
+Go to [official site](Watt%20Governor/) for full details on the complete project.
 
 ## Ce2Lab - Ball and Beam
 
 The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a PID control action to a servo motor that tilts the beam.
 
-Go to [official site](Ball%20and%20Beam/Readme.md) for full details on the complete project.
+Go to [official site](Ball%20and%20Beam/) for full details on the complete project.
 
 ## License
 
