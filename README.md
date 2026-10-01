@@ -1,5 +1,7 @@
 # Ce2Lab Project
 
+The shortage of physical lab models in university control engineering laboratories is a widely recognized problem at theinternational level. In response to this challenge, this paper presents CE2Labs (Unlocking the Development and Experiences ofControl Education Labs), a teaching innovation project funded by theIFAC Activity Fundand developed by an internationalteam of educators and laboratory engineers from universities in Spain, Sweden, France, Germany, and the United Kingdom.The project proposes the design and construction of low-cost, open-source physical lab models at different levels of complexity,ranging from 3D-printed mechanical devices to Arduino-based and custom electronics solutions, as well as the developmentof an open-access web platform where educators worldwide can access the materials and share experiences
+
 This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
 
 <a href="https://arm.ual.es/arm-group/"> 
@@ -196,7 +198,7 @@ If you're reusing the code, try connecting everything as shown in the image belo
 <details>
 <summary>This project is licensed under the **BSD 3-Clause License**.</summary>
 
-Copyright (c) 2026, Fernando Cañadas Aránega, Igor Mendes Lima Pataro, Enrique Rodríguez Miranda, José Luis Guzmán Sánchez and Juan Diego Gil Vergel.
+Copyright (c) 2026, Fernando Cañadas Aránega, Igor Mendes Lima Pataro, Enrique Rodríguez Miranda, José González Hernández, José Luis Guzmán Sánchez and Juan Diego Gil Vergel.
 
 All rights reserved.
 
@@ -225,8 +227,9 @@ For the complete license text see the `LICENSE` file in this repository.
 [Fernando Cañadas Aránega](https://linktr.ee/fercanara), 
 Igor Mendes Lima Pataro,
 Enrique Rodríguez Miranda, 
+José González Hernández,
 [Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/) and
-Juan Diego Gil Vergel.
+[Juan Diego Gil Vergel](https://w3.ual.es/personal/jdgil/).
 
 
 _University of Almería, Department of Computer Science, CIESOL, ceia3, Ctra. Sacramento s/n, 04120, Almería, Spain._
