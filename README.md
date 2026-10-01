@@ -1,12 +1,12 @@
 # Ce2Lab Project
 
 [![Last Updated](https://img.shields.io/badge/last%20updated-2026--09-blue)](.)
-[![DOI](https://doi.org/10.5281/zenodo.23079949)](https://doi.org/10.5281/zenodo.23079949)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22679881.svg)](https://doi.org/10.5281/zenodo.23079949)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
-The shortage of physical lab models in university control engineering laboratories is a widely recognized problem at theinternational level. In response to this challenge, this paper presents CE2Labs (Unlocking the Development and Experiences ofControl Education Labs), a teaching innovation project funded by theIFAC Activity Fundand developed by an internationalteam of educators and laboratory engineers from universities in Spain, Sweden, France, Germany, and the United Kingdom.The project proposes the design and construction of low-cost, open-source physical lab models at different levels of complexity,ranging from 3D-printed mechanical devices to Arduino-based and custom electronics solutions, as well as the developmentof an open-access web platform where educators worldwide can access the materials and share experiences
+The shortage of physical lab models in university control engineering laboratories is a widely recognized problem at theinternational level. In response to this challenge, this paper presents CE2Labs (Unlocking the Development and Experiences ofControl Education Labs), a teaching innovation project funded by theIFAC Activity Fundand developed by an internationalteam of educators and laboratory engineers from universities in Spain, Sweden, France, Germany, and the United Kingdom.The project proposes the design and construction of low-cost, open-source physical lab models at different levels of complexity,ranging from 3D-printed mechanical devices to Arduino-based and custom electronics solutions, as well as the developmentof an open-access web platform where educators worldwide can access the materials and share experiences.
 
-This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
+Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more information. This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
 
 <a href="https://arm.ual.es/arm-group/"> 
   <img src="docs/arm-logo2.jpg" width="150" alt="ARM Group Logo" /> 
@@ -22,14 +22,14 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
 *Project article*
 
 ```
-@article{canadas2026ros2,
-  title={A ROS2 Benchmarking Framework for Hierarchical Control Strategies in Mobile Robots for Mediterranean Greenhouses},
-  author={Ca{\~n}adas-Ar{\'a}nega, Fernando and Ma{\~n}as-{\'A}lvarez, Francisco J. and Guzmán, Jos{\'e} L. Moreno, Jos{\'e} C. and Blanco-Claraco, Jos{\'e} L.},
-  journal={arXiv preprint arXiv:2602.15162},
+@article{sanchez2026democratizando,
+  title={Democratizando los laboratorios de control: la iniciativa CE2Labs},
+  author={S{\'a}nchez, Jos{\'e} Luis Guzm{\'a}n and Gil, Juan Diego and Ca{\~n}adas-Ar{\'a}nega, Fernando and Pataro, Igor ML and Rodr{\'\i}guez-Miranda, Enrique and Gonz{\'a}lez-Her{\'a}ndez, Jos{\'e} and Mu{\~n}oz-Rodr{\'\i}guez, Manuel and Berenguel, Manuel},
+  journal={Jornadas de Autom{\'a}tica},
+  number={47},
   year={2026}
 }
 ```
-
 *Ball and beam article*
 
 ```
@@ -41,7 +41,6 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
   year={2026}
 }
 ```
-
 *Software citation*
 
 ```
@@ -50,8 +49,8 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
   title   = {Ce2Lab Repository Project},
   version = {0.0.1},
   year    = {2026},
-  doi     = {https://doi.org/10.5281/zenodo.22679881},
-  url     = {https://github.com/FerCanAra/robotics_benchmark_greenhouse/tree/main}
+  doi     = {https://doi.org/10.5281/zenodo.23079949},
+  url     = {https://github.com/FerCanAra/Ce2Lab_ball_and_beam/tree/main}
 }
 ```
 ## Ce2Lab - CE2Lab Watt Governor
