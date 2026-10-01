@@ -1,5 +1,6 @@
 # Ce2Lab Project
 ======================================
+
 [![Last Updated](https://img.shields.io/badge/last%20updated-2026--09-blue)](.)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22679881.svg)](https://doi.org/10.5281/zenodo.22679881)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
@@ -18,9 +19,9 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
 > **Note:** Process tested with Windows 11 with PlatformIO (VSC) on 8th April 2026.
 
 ## 📑 Citation
-------------------
+
 *Project article*
-------------------
+
 ```
 @article{canadas2026ros2,
   title={A ROS2 Benchmarking Framework for Hierarchical Control Strategies in Mobile Robots for Mediterranean Greenhouses},
@@ -29,9 +30,9 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
   year={2026}
 }
 ```
-------------------
+
 *Ball and beam article*
-------------------
+
 ```
 @article{aranega2026plataforma,
   title={Plataforma Ball and Beam de bajo coste como apoyo a la ense{\~n}anza de conceptos introductorios de modelado y control autom{\'a}tico},
@@ -43,7 +44,7 @@ This work was carried out within the [Automation, Robotics and Mechatronics Grou
 ```
 
 *Software citation*
-------------------
+
 ```
 @software{c2d_project,
   author={Ca{\~n}adas-Aranega,Fernando  and Pataro, Igor M.L. and Rodr{\'\i}guez, Enrique and González, José and Muñoz, Manuel and Gil, Juan Diego and Luis Guzm{\'a}n, Jos{\'e}},
