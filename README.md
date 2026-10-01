@@ -105,13 +105,6 @@ José González Hernández,
 [Jose Luis Guzman Sánchez](https://w3.ual.es/personal/joguzman/) and
 [Juan Diego Gil Vergel](https://w3.ual.es/personal/jdgil/).
 
-
-_University of Almería, Department of Computer Science, CIESOL, ceia3, Ctra. Sacramento s/n, 04120, Almería, Spain._
-
-## Acknowledgements
-
-This work has been funded by the Project "Unlocking the Development and Experiences of Control Education Labs (CE2Labs)".
-
 ## References
 
 Code template: [AntonAshraf](https://github.com/AntonAshraf/Ball-Beam-PID-Control/tree/main)
