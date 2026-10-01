@@ -59,6 +59,7 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
 }
 ```
 </details>
+
 ## Ce2Lab - CE2Lab Watt Governor
 
 This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use.
