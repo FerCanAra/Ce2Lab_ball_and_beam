@@ -6,7 +6,7 @@
 
 The shortage of physical lab models in university control engineering laboratories is a widely recognized problem at theinternational level. In response to this challenge, this paper presents CE2Labs (Unlocking the Development and Experiences ofControl Education Labs), a teaching innovation project funded by theIFAC Activity Fundand developed by an internationalteam of educators and laboratory engineers from universities in Spain, Sweden, France, Germany, and the United Kingdom.The project proposes the design and construction of low-cost, open-source physical lab models at different levels of complexity,ranging from 3D-printed mechanical devices to Arduino-based and custom electronics solutions, as well as the developmentof an open-access web platform where educators worldwide can access the materials and share experiences.
 
-<img src="../docs/Model_2_1.gif" width="300">
+<img src="docs/Model_2_1.gif" width="300">
 
 Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more information. This work was carried out within the [Automation, Robotics and Mechatronics Group](https://arm.ual.es/arm-group/) (ARM TEP 197) at the University of Almería (Spain).
 
