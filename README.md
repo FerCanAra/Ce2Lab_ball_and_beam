@@ -19,7 +19,8 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
 
 ## 📑 Citation
 
-*Project article*
+<details>
+<summary>Project article</summary>
 
 ```
 @article{sanchez2026democratizando,
@@ -30,7 +31,9 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   year={2026}
 }
 ```
-*Ball and beam article*
+</details>
+<details>
+<summary>Ball and beam article</summary>
 
 ```
 @article{aranega2026plataforma,
@@ -41,8 +44,10 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   year={2026}
 }
 ```
-*Software citation*
-
+</details>
+<details>
+<summary>Software citation</summary>
+  
 ```
 @software{c2d_project,
   author={Ca{\~n}adas-Aranega,Fernando  and Pataro, Igor M.L. and Rodr{\'\i}guez, Enrique and González, José and Muñoz, Manuel and Gil, Juan Diego and Luis Guzm{\'a}n, Jos{\'e}},
@@ -53,6 +58,7 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   url     = {https://github.com/FerCanAra/Ce2Lab_ball_and_beam/tree/main}
 }
 ```
+</details>
 ## Ce2Lab - CE2Lab Watt Governor
 
 This repository contains the STL files required to build a simple **Watt Governor demonstrator** for educational use.
