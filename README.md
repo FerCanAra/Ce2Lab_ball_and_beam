@@ -15,8 +15,6 @@ Visit the project [OFFICIAL website](https://arm.ual.es/ce2lab2/#) for more info
   <img src="docs/logo2.png" width="55" alt="LinkedIn Logo" /> 
 </a>
 
-> **Note:** Process tested with Windows 11 with PlatformIO (VSC) on 8th April 2026.
-
 ## 📑 Citation
 
 <details>
@@ -123,6 +121,8 @@ The Ball and Beam system is a classic experiment widely used in control engineer
 <img src="docs/Model_1_1.gif" width="350"> <img src="docs/Model_2_1.gif" width="350">
 
 In this project, a different ATmega328P-based implementation of the Ball and Beam system is developed, using an ultrasonic and laser sensors to measure the ball's position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination, keeping the ball close to the desired target position.
+
+> **Note:** Process tested with Windows 11 with PlatformIO (VSC) on 8th April 2026.
 
 <details>
 <summary>Model 1</summary>
