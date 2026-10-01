@@ -3,7 +3,7 @@
 
 The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a PID control action to a servo motor that tilts the beam.
 
-<img src="docs/Model_1_1.gif" width="350"> <img src="docs/Model_2_1.gif" width="350">
+<img src="../docs/Model_1_1.gif" width="350"> <img src="../docs/Model_2_1.gif" width="350">
 
 In this project, a different ATmega328P-based implementation of the Ball and Beam system is developed, using an ultrasonic and laser sensors to measure the ball's position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination, keeping the ball close to the desired target position.
 
