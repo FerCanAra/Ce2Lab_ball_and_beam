@@ -1,5 +1,5 @@
 
-## Ce2Lab - Ball and Beam
+# Ce2Lab - Ball and Beam
 
 The Ball and Beam system is a classic experiment widely used in control engineering to study PID control techniques. The objective of the system is to maintain a ball at a desired position along a beam by adjusting the beam's angle. This is achieved by continuously measuring the ball position and applying a PID control action to a servo motor that tilts the beam.
 
@@ -8,6 +8,18 @@ The Ball and Beam system is a classic experiment widely used in control engineer
 In this project, a different ATmega328P-based implementation of the Ball and Beam system is developed, using an ultrasonic and laser sensors to measure the ball's position and a servo motor to control the beam angle. A PID (Proportional–Integral–Derivative) controller is implemented to automatically adjust the beam inclination, keeping the ball close to the desired target position.
 
 > **Note:** Process tested with Windows 11 with PlatformIO (VSC) on 8th April 2026.
+
+## Ball and Beam GUI
+
+A web interface is also available, allowing you to run simulations in HTML and connect to the actual model for direct interaction. Follow this [link](src="../Ball") to learn more.
+
+<img width="1907" height="932" alt="image" src="https://github.com/user-attachments/assets/883b519c-be0f-4b67-a56e-57df65cb50dd" />
+
+
+
+
+
+
 
 <details>
 <summary>Model 1</summary>
