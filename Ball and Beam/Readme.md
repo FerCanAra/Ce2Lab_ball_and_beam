@@ -13,7 +13,7 @@ In this project, a different ATmega328P-based implementation of the Ball and Bea
 
 A web interface is also available, allowing you to run simulations in HTML and connect to the actual model for direct interaction. Follow this [official site](Ball%and%Beam%GUI/) to learn more.
 
-<img width="1907" height="932" alt="image" src="https://github.com/user-attachments/assets/883b519c-be0f-4b67-a56e-57df65cb50dd" />
+<img width="950" height="450" alt="image" src="https://github.com/user-attachments/assets/883b519c-be0f-4b67-a56e-57df65cb50dd" />
 
 
 <details>
