@@ -1,0 +1,1539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Balance the Ball · PID control</title>
+<style>
+:root{
+  --paper:#E9ECEF;
+  --stage:#F7F8FA;
+  --ink:#15213A;
+  --ink-2:#4A566E;
+  --line:#CBD2DB;
+  --console:#15213A;
+  --console-2:#1F2E4D;
+  --console-line:#33446A;
+  --on-console:#F3F5F9;
+  --on-console-2:#A9B4CB;
+  --ball:#FF7A1A;
+  --rig:#F2541B;
+  --beam:#1E2126;
+  --p:#3D8BFF;
+  --i:#1FBF7A;
+  --d:#B866FF;
+  --alarm:#E5372B;
+  --font: Bahnschrift, "DIN Alternate", "DIN 2014", "Barlow", "Roboto Condensed", "Segoe UI", system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--ball);outline-offset:2px}
+
+/* ---------- header ---------- */
+.top{display:flex;align-items:center;gap:24px;height:64px;padding:0 20px 0 24px}
+.brand{display:flex;align-items:baseline;gap:18px;min-width:0}
+.brand h1{margin:0;font-size:30px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.brand h1 .dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;background:var(--ball);
+  margin-left:.12em;transform:translateY(-.02em)}
+.brand p{margin:0;color:var(--ink-2);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conn{margin-left:auto;display:flex;align-items:center;gap:8px}
+.status{display:flex;align-items:center;gap:8px;padding:0 12px;height:36px;border-radius:18px;
+  background:#fff;border:1px solid var(--line);font-size:15px;white-space:nowrap}
+.status i{width:10px;height:10px;border-radius:50%;background:#9AA4B5}
+.status[data-s="serial"] i{background:var(--i);box-shadow:0 0 0 4px rgba(31,191,122,.18)}
+.status[data-s="sim"] i{background:var(--d)}
+.status[data-s="wait"] i{background:var(--ball)}
+.btn{height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:15px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.primary:hover{background:#22325A}
+.btn.icon{width:36px;padding:0;font-size:18px;line-height:1}
+
+/* ---------- main grid ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:16px;height:calc(100vh - 64px);padding:0 16px 16px}
+.stage{display:grid;grid-template-rows:minmax(240px,52fr) 40px auto minmax(0,44fr);gap:6px;min-height:0}
+
+.scene-wrap{position:relative;background:var(--stage);border-radius:20px;overflow:hidden;min-height:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#scene.dragging{cursor:grabbing}
+.readout{position:absolute;top:12px;left:18px;display:flex;gap:24px;pointer-events:none}
+.readout div{display:flex;flex-direction:column}
+.readout span{font-size:13px;color:var(--ink-2)}
+.readout b{font-size:24px;font-weight:600;line-height:1.1}
+.readout .err b{color:var(--ink)}
+.src-tag{position:absolute;top:16px;right:18px;font-size:14px;padding:4px 10px;border-radius:12px;
+  background:rgba(184,102,255,.14);color:#7B2FC4}
+.src-tag[hidden]{display:none}
+
+.sp-row{position:relative;min-width:0}
+#sp{position:absolute;top:4px;--c:var(--ink)}
+.sp-label{position:absolute;top:0;left:6px;height:40px;display:flex;flex-direction:column;justify-content:center;font-size:15px;font-weight:600;line-height:1.1;pointer-events:none}
+.sp-label small{font-weight:400;font-size:12.5px;color:var(--ink-2)}
+.sp-row[data-off="true"]{visibility:hidden}
+
+.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:rgba(247,248,250,.9);text-align:center;padding:24px}
+.empty[hidden]{display:none}
+.empty h2{margin:0;font-size:30px;font-weight:600}
+.empty p{margin:0;color:var(--ink-2);font-size:17px;max-width:46ch}
+.empty .row{display:flex;gap:10px}
+.empty .btn{height:46px;padding:0 20px;font-size:18px}
+
+.alert{position:absolute;left:18px;right:18px;top:74px;padding:10px 14px;border-radius:10px;background:var(--alarm);color:#fff;font-size:17px}
+.alert[hidden]{display:none}
+
+.coach{margin:0;min-height:48px;display:flex;align-items:center;gap:12px;padding:0 6px;font-size:21px;line-height:1.25}
+.coach::before{content:"";flex:0 0 6px;align-self:stretch;margin:6px 0;border-radius:3px;background:var(--coach,var(--line))}
+
+.charts{display:grid;grid-template-rows:minmax(0,62fr) minmax(0,38fr);gap:8px;min-height:0}
+.chart{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;min-height:0}
+.chart canvas{position:absolute;inset:0;width:100%;height:100%}
+.legend{position:absolute;top:8px;left:12px;display:flex;gap:14px;font-size:14px;color:var(--ink-2);pointer-events:none}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;background:var(--c)}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--ink) 0 5px,transparent 5px 8px)}
+.legend b{font-weight:600;color:var(--ink);margin-right:4px}
+
+/* ---------- control console ---------- */
+.desk{background:var(--console);color:var(--on-console);border-radius:20px;padding:14px 18px 16px;display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden}
+.deskscroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:var(--console-line) transparent}
+.deskscroll::-webkit-scrollbar{width:8px}
+.deskscroll::-webkit-scrollbar-thumb{background:var(--console-line);border-radius:4px}
+.knob{--c:var(--p);display:grid;grid-template-columns:40px 1fr;column-gap:10px}
+.letter{grid-row:1/4;font-size:46px;font-weight:700;line-height:1;color:var(--c);text-align:center;padding-top:2px}
+.knob-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.knob h3{margin:0;font-size:19px;font-weight:600}
+.knob output{font-size:26px;font-weight:600}
+.knob .what{margin:0;font-size:14px;color:var(--on-console-2);line-height:1.25}
+.knob .what em{font-style:normal;color:var(--c)}
+
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;margin:2px 0 0;background:transparent;--pct:50%}
+input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:5px;
+  background:linear-gradient(to right,var(--c) var(--pct),var(--track,rgba(255,255,255,.16)) var(--pct))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-9px;border-radius:50%;
+  background:#fff;border:5px solid var(--c);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+input[type=range]::-moz-range-track{height:10px;border-radius:5px;background:var(--track,rgba(255,255,255,.16))}
+input[type=range]::-moz-range-progress{height:10px;border-radius:5px;background:var(--c)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:5px solid var(--c)}
+.knob input[type=range]{margin-left:0}
+#sp{--track:rgba(21,33,58,.14)}
+
+.block h4{margin:0 0 6px;font-size:15px;font-weight:600;color:var(--on-console-2)}
+.push{display:grid;grid-template-columns:44px 1fr 62px;align-items:center;row-gap:5px;column-gap:8px;font-size:14px}
+.push .lab{text-align:center;font-weight:700;font-size:17px}
+.push .bar{position:relative;height:14px;border-radius:3px;background:var(--console-2)}
+.push .bar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--console-line)}
+.push .bar s{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--c);text-decoration:none}
+.push .val{text-align:right;font-size:15px}
+.push .ends{grid-column:2;display:flex;justify-content:space-between;color:var(--on-console-2);font-size:12.5px}
+
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.presets button{height:36px;border-radius:8px;border:1px solid var(--console-line);background:var(--console-2);color:var(--on-console);font-size:15px}
+.presets button:hover{border-color:var(--on-console-2)}
+.presets button[aria-pressed="true"]{background:var(--on-console);color:var(--ink);border-color:var(--on-console)}
+
+.reto{border-top:1px solid var(--console-line);padding-top:10px}
+.reto .msg{margin:4px 0 0;font-size:13.5px;color:var(--on-console-2);line-height:1.3;min-height:2.6em}
+.reto .nums{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:10px;margin-top:6px}
+.reto .nums div{display:flex;flex-direction:column}
+.reto .nums span{font-size:13px;color:var(--on-console-2)}
+.reto .nums b{font-size:24px;font-weight:600}
+.reto .nums .rec b{color:var(--ball)}
+.reto .best{margin:2px 0 0;font-size:13px;color:var(--on-console-2);min-height:1.3em}
+
+/* ---------- console tabs ---------- */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--console-2);padding:4px;border-radius:11px}
+.tabs button{height:34px;border:0;border-radius:8px;background:transparent;color:var(--on-console-2);font-size:15px;font-weight:600}
+.tabs button:hover{color:var(--on-console)}
+.tabs button[aria-selected="true"]{background:var(--on-console);color:var(--ink)}
+.pane{display:flex;flex-direction:column;gap:10px}
+.pane[hidden]{display:none}
+.presets[data-lock="true"]{opacity:.4;pointer-events:none}
+
+/* ---------- competition ---------- */
+.comp .nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
+.comp .nums div{display:flex;flex-direction:column;min-width:0}
+.comp .nums span{font-size:13px;color:var(--on-console-2)}
+.comp .nums b{font-size:32px;font-weight:600;line-height:1.05}
+.comp .nums .goal b{color:var(--ball)}
+.comp .hold{height:8px;border-radius:4px;background:var(--console-2);margin-top:9px;overflow:hidden}
+.comp .hold s{display:block;height:100%;width:0;background:var(--i);text-decoration:none;transition:width .12s linear}
+.comp .msg{margin:8px 0 0;font-size:13.5px;color:var(--on-console-2);line-height:1.3;min-height:3.9em}
+.comp .go{width:100%;height:52px;border-radius:10px;border:0;background:var(--ball);color:#fff;font-size:20px;font-weight:700}
+.comp .go[data-on="true"]{background:var(--console-2);color:var(--on-console);border:1px solid var(--console-line)}
+
+/* ---------- leaderboard ---------- */
+ol.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+ol.rank li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:baseline;
+  padding:7px 10px;border-radius:8px;background:var(--console-2);font-size:16px}
+ol.rank li .pos{color:var(--on-console-2);font-size:14px;text-align:right}
+ol.rank li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ol.rank li .tm{font-weight:600}
+ol.rank li[data-top="1"]{background:var(--ball);color:#fff}
+ol.rank li[data-top="1"] .pos{color:rgba(255,255,255,.8)}
+ol.rank li[data-top="2"],ol.rank li[data-top="3"]{box-shadow:inset 0 0 0 1px var(--console-line)}
+ol.rank li[data-me="true"]{outline:2px solid var(--i);outline-offset:1px}
+.rank-note{margin:8px 0 0;font-size:13px;color:var(--on-console-2);line-height:1.3}
+
+/* ---------- win dialog ---------- */
+.sheet.small{max-width:460px;text-align:center;padding:26px 30px}
+.sheet.small .time{font-size:64px;font-weight:700;line-height:1;margin:4px 0 0;color:var(--ball)}
+.sheet.small .pos{font-size:22px;font-weight:600;margin:10px 0 0}
+.sheet.small .gains{font-size:15px;color:var(--ink-2);margin:4px 0 14px}
+.sheet.small label{display:block;font-size:15px;color:var(--ink-2);margin-bottom:6px}
+.sheet.small input{width:100%;height:52px;padding:0 14px;border-radius:10px;border:1px solid var(--line);
+  font-size:24px;text-align:center;text-transform:uppercase}
+.sheet.small .row{display:flex;gap:8px;margin-top:14px}
+.sheet.small .row .btn{flex:1;height:46px;font-size:17px}
+
+.actions{display:flex;gap:8px;margin-top:auto}
+.actions button{flex:1;height:46px;border-radius:10px;border:0;font-size:18px;font-weight:600}
+#btnRun{background:var(--ball);color:#1b1206}
+#btnRun[data-running="false"]{background:var(--i);color:#062014}
+#btnDemo,#btnKick{background:var(--console-2);color:var(--on-console);border:1px solid var(--console-line)}
+#btnDemo[aria-pressed="true"]{background:var(--on-console);color:var(--ink)}
+#btnKick[hidden]{display:none}
+
+/* ---------- help ---------- */
+.overlay{position:fixed;inset:0;background:rgba(21,33,58,.55);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10}
+.overlay[hidden]{display:none}
+.sheet{background:#fff;border-radius:20px;max-width:880px;width:100%;max-height:100%;overflow:auto;padding:28px 34px}
+.sheet h2{margin:0 0 8px;font-size:32px}
+.sheet p{font-size:18px;line-height:1.45;max-width:68ch;margin:8px 0}
+.terms{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0}
+.terms div{border-top:6px solid var(--c);padding-top:10px}
+.terms b{display:block;font-size:22px;margin-bottom:4px}
+.terms p{font-size:16.5px;margin:0;line-height:1.4}
+.sheet ol{font-size:18px;line-height:1.5;padding-left:1.4em;margin:6px 0 12px}
+.sheet .close{float:right;margin:-6px -10px 0 0}
+
+/* ---------- operator panel ---------- */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:100%;background:#fff;box-shadow:-12px 0 40px rgba(21,33,58,.25);
+  padding:20px 22px;overflow:auto;z-index:11;display:flex;flex-direction:column;gap:16px}
+.drawer[hidden]{display:none}
+.drawer h2{margin:0;font-size:24px}
+.drawer h3{margin:0 0 4px;font-size:17px}
+.drawer p.note{margin:0;font-size:14px;color:var(--ink-2);line-height:1.35}
+.drawer .field{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px}
+.drawer .field label{font-size:15px}
+.drawer .field output{font-size:17px;font-weight:600}
+.drawer .field input[type=range]{grid-column:1/-1;--c:var(--ink);--track:rgba(21,33,58,.14)}
+.drawer .row{display:flex;gap:8px;flex-wrap:wrap}
+.drawer .check{display:flex;align-items:center;gap:10px;font-size:15px}
+.drawer .check input{width:20px;height:20px}
+.drawer dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:15px}
+.drawer dt{color:var(--ink-2)}
+.drawer dd{margin:0;font-weight:600}
+.drawer section{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:10px}
+.drawer .danger{color:var(--alarm)}
+
+@media (max-width:1100px){
+  body{overflow:auto}
+  .grid{grid-template-columns:1fr;height:auto}
+  .stage{grid-template-rows:300px auto 360px}
+  .brand p{display:none}
+}
+@media (max-height:980px){
+  .desk{gap:7px;padding-top:10px}
+  .knob .what{font-size:13px}
+  input[type=range]{height:28px}
+  .block h4{margin-bottom:3px;font-size:14px}
+  .push{row-gap:3px}
+  .push .bar{height:11px}
+  .push .ends{display:none}
+  .presets button{height:32px;font-size:14px}
+  .reto{padding-top:7px}
+  .tabs button{height:30px;font-size:14px}
+  .comp .nums b{font-size:27px}
+  .comp .msg{min-height:2.6em;margin-top:6px}
+  .comp .go{height:46px}
+  ol.rank li{padding:5px 10px;font-size:15px}
+  .reto .nums b{font-size:21px}
+  .reto .best{display:none}
+  .actions button{height:42px}
+}
+@media (max-height:800px){
+  .desk{gap:6px;padding:10px 16px 12px}
+  input[type=range]{height:26px}
+  .push{row-gap:2px}
+  .push .bar{height:10px}
+  .deskscroll{gap:6px}
+  .knob .what{font-size:12.5px;line-height:1.2}
+  .knob h3{font-size:17px}
+  .knob output{font-size:23px}
+  .letter{font-size:38px}
+  .reto .nums b{font-size:19px}
+  .reto .msg{min-height:2.6em;font-size:13px}
+  .comp .nums b{font-size:24px}
+  .comp .msg{min-height:0}
+  .comp .go{height:42px;font-size:18px}
+  .actions button{height:38px;font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){ *{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1>Balance the Ball<span class="dot" aria-hidden="true"></span></h1>
+    <p>Move P, I and D and watch the ball</p>
+  </div>
+  <div class="conn">
+    <div class="status" id="status" data-s="none"><i></i><span id="statusTxt">Not connected</span></div>
+    <button class="btn primary" id="btnConnect">Connect Arduino</button>
+    <button class="btn" id="btnSim">Simulator</button>
+    <button class="btn" id="btnHelp">What is a PID?</button>
+    <button class="btn icon" id="btnOp" aria-label="Operator settings" title="Operator settings">⚙</button>
+  </div>
+</header>
+
+<main class="grid">
+  <section class="stage">
+    <div class="scene-wrap" id="sceneWrap">
+      <canvas id="scene" aria-label="Drawing of the beam and the ball. Drag to move the target."></canvas>
+      <div class="readout">
+        <div><span>Ball</span><b id="roPos">–</b></div>
+        <div><span>Target</span><b id="roSp">–</b></div>
+        <div class="err"><span>Error</span><b id="roErr">–</b></div>
+        <div><span>Beam</span><b id="roAng">–</b></div>
+      </div>
+      <span class="src-tag" id="simTag" hidden>Simulator</span>
+      <div class="alert" id="alert" hidden></div>
+      <div class="empty" id="empty">
+        <h2>Connect the rig to start</h2>
+        <p>Plug the Arduino into a USB port and press &laquo;Connect Arduino&raquo;. If you do not have the rig to hand, you can play with the simulator.</p>
+        <div class="row">
+          <button class="btn primary" data-act="connect">Connect Arduino</button>
+          <button class="btn" data-act="sim">Try the simulator</button>
+        </div>
+        <p id="serialNote" style="font-size:15px"></p>
+      </div>
+    </div>
+
+    <div class="sp-row" id="spRow" data-off="true">
+      <span class="sp-label">Target<small>drag it or tap the beam</small></span>
+      <input type="range" id="sp" min="70" max="210" step="1" value="140" aria-label="Target, distance from the sensor in millimetres">
+    </div>
+
+    <p class="coach" id="coach">&nbsp;</p>
+
+    <div class="charts">
+      <div class="chart">
+        <canvas id="chartPos"></canvas>
+        <div class="legend"><b>Position</b>
+          <span><i style="--c:var(--ball)"></i>Ball</span>
+          <span><i class="dash"></i>Target</span>
+          <span><i style="--c:rgba(21,33,58,.18);height:10px"></i>Good zone (&plusmn;1 cm)</span>
+        </div>
+      </div>
+      <div class="chart">
+        <canvas id="chartU"></canvas>
+        <div class="legend"><b>Tilt</b>
+          <span><i style="--c:var(--ink)"></i>Total</span>
+          <span><i style="--c:var(--p)"></i>P</span>
+          <span><i style="--c:var(--i)"></i>I</span>
+          <span><i style="--c:var(--d)"></i>D</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="desk" aria-label="PID controls">
+    <div class="deskscroll">
+    <div class="knob" style="--c:var(--p)">
+      <span class="letter">P</span>
+      <div class="knob-head"><h3>Proportional</h3><output id="kpVal">–</output></div>
+      <p class="what">The further away the ball is, the more it tilts the beam. <em>Too much and it oscillates.</em></p>
+      <input type="range" id="kp" min="0" max="0.3" step="0.005" aria-label="Proportional gain">
+    </div>
+    <div class="knob" style="--c:var(--i)">
+      <span class="letter">I</span>
+      <div class="knob-head"><h3>Integral</h3><output id="kiVal">–</output></div>
+      <p class="what">Remembers the error that piles up and keeps pushing until the ball arrives. <em>Too much and it overshoots.</em></p>
+      <input type="range" id="ki" min="0" max="0.2" step="0.005" aria-label="Integral gain">
+    </div>
+    <div class="knob" style="--c:var(--d)">
+      <span class="letter">D</span>
+      <div class="knob-head"><h3>Derivative</h3><output id="kdVal">–</output></div>
+      <p class="what">Watches how fast the ball is going and brakes it, like a shock absorber. <em>Too much and it crawls and shakes.</em></p>
+      <input type="range" id="kd" min="0" max="0.2" step="0.005" aria-label="Derivative gain">
+    </div>
+
+    <div class="block">
+      <h4>Who is tilting the beam right now?</h4>
+      <div class="push" id="push">
+        <span class="lab" style="color:var(--p)">P</span><div class="bar" style="--c:var(--p)"><s id="barP"></s></div><span class="val" id="valP">–</span>
+        <span class="lab" style="color:var(--i)">I</span><div class="bar" style="--c:var(--i)"><s id="barI"></s></div><span class="val" id="valI">–</span>
+        <span class="lab" style="color:var(--d)">D</span><div class="bar" style="--c:var(--d)"><s id="barD"></s></div><span class="val" id="valD">–</span>
+        <span class="lab">Σ</span><div class="bar" style="--c:var(--on-console)"><s id="barU"></s></div><span class="val" id="valU">–</span>
+        <div class="ends"><span>pulls the ball towards the sensor</span><span>pushes it away</span></div>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="play" aria-selected="true" aria-controls="panePlay">Practice</button>
+      <button role="tab" data-tab="comp" aria-selected="false" aria-controls="paneComp">Competition</button>
+      <button role="tab" data-tab="rank" aria-selected="false" aria-controls="paneRank">Leaderboard</button>
+    </div>
+
+    <div class="pane" id="panePlay" role="tabpanel">
+      <div class="block">
+        <h4>Try a recipe</h4>
+        <div class="presets" id="presets"></div>
+      </div>
+
+      <div class="block reto">
+        <h4>Challenge: how long does it take to settle?</h4>
+
+        <div class="nums">
+          <div><span>Time</span><b id="retoTime">–</b></div>
+          <div><span>Overshoot</span><b id="retoOver">–</b></div>
+          <div class="rec"><span>Record</span><b id="retoRec">–</b></div>
+        </div>
+        <p class="msg" id="retoMsg">Move the target by at least 3 cm and we will time how long the ball takes to settle in the good zone.</p>
+        <p class="best" id="retoBest"></p>
+      </div>
+    </div>
+
+    <div class="pane comp" id="paneComp" role="tabpanel" hidden>
+      <div class="block">
+        <h4 id="compHead">Tune the PID against the clock</h4>
+        <div class="nums">
+          <div><span>Time</span><b id="compTime">–</b></div>
+          <div class="goal"><span>Target</span><b id="compGoal">–</b></div>
+        </div>
+        <div class="hold"><s id="compHold"></s></div>
+        <p class="msg" id="compMsg">Press &laquo;Start&raquo;: you get a random target and random settings, which are almost never good ones. Move P, I and D until the ball sits still on the target for 3 seconds in a row. The fastest time wins.</p>
+      </div>
+      <button class="go" id="compBtn">Start</button>
+    </div>
+
+    <div class="pane" id="paneRank" role="tabpanel" hidden>
+      <div class="block">
+        <h4 id="rankHead">Competition leaderboard</h4>
+        <ol class="rank" id="rankList"></ol>
+        <p class="rank-note" id="rankNote"></p>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="actions">
+      <button id="btnRun" data-running="true">Stop</button>
+      <button id="btnDemo" aria-pressed="false">Demo</button>
+      <button id="btnKick" hidden>Nudge</button>
+    </div>
+  </aside>
+</main>
+
+<!-- Help -->
+<div class="overlay" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="sheet">
+    <button class="btn close" data-close>Close</button>
+    <h2 id="helpTitle">What is a PID?</h2>
+    <p>We want the ball to sit still at one point of the beam. The controller measures where the ball is about 30 times a second, works out the difference from the target (the <strong>error</strong>) and decides how far to tilt the beam. That decision is the sum of three ideas:</p>
+    <div class="terms">
+      <div style="--c:var(--p)"><b style="color:var(--p)">P · the present</b><p>Tilts more the further away the ball is. It is the main push, but on its own it makes the ball swing back and forth like a pendulum.</p></div>
+      <div style="--c:var(--i)"><b style="color:var(--i)">I · the past</b><p>Adds up the error as it piles up. If the ball stops close to the target but never reaches it, the I pushes a little harder each time until it does.</p></div>
+      <div style="--c:var(--d)"><b style="color:var(--d)">D · the future</b><p>Looks at how fast the ball is moving and brakes it before it arrives, like the shock absorber of a car.</p></div>
+    </div>
+    <p><strong>Try this:</strong></p>
+    <ol>
+      <li>Press &laquo;P only&raquo;: the ball never stops going back and forth.</li>
+      <li>Raise the D bit by bit until the ball stops.</li>
+      <li>See whether it settles a few millimetres short of the target. Raise the I a little and watch it correct that.</li>
+      <li>Change the target and try to beat the record time.</li>
+    </ol>
+    <p><strong>Competition:</strong> on the &laquo;Competition&raquo; tab the program deals out a random target and random settings, almost always bad ones, and starts the clock. You have to move P, I and D until the ball sits still on the target for three seconds in a row. Your time goes on the leaderboard.</p>
+    <p>PIDs are everywhere: in the cruise control of a car, in drones, in an oven, in the climate of a greenhouse or in a water treatment plant.</p>
+  </div>
+</div>
+
+<!-- Competition: result -->
+<div class="overlay" id="win" hidden role="dialog" aria-modal="true" aria-labelledby="winTitle">
+  <div class="sheet small">
+    <h2 id="winTitle">Ball balanced!</h2>
+    <p class="time" id="winTime">–</p>
+    <p class="pos" id="winPos"></p>
+    <p class="gains" id="winGains"></p>
+    <label for="winName">Type your name for the leaderboard</label>
+    <input id="winName" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Your name">
+    <div class="row">
+      <button class="btn" id="winSkip">No thanks</button>
+      <button class="btn primary" id="winSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Operator panel -->
+<aside class="drawer" id="op" hidden aria-label="Operator settings">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <h2>Operator settings</h2>
+    <button class="btn" data-close>Close</button>
+  </div>
+
+  <section>
+    <h3>Status</h3>
+    <dl>
+      <dt>Source</dt><dd id="opSrc">–</dd>
+      <dt>Sensor reading</dt><dd id="opRaw">–</dd>
+      <dt>Samples per second</dt><dd id="opHz">–</dd>
+      <dt>Estimated beam tilt</dt><dd id="opBiasEst">–</dd>
+      <dt>Servo direction</dt><dd id="opDir">–</dd>
+      <dt>Arduino resets</dt><dd id="opResets">0</dd>
+    </dl>
+    <p class="note" id="opResetNote"></p>
+  </section>
+
+  <section>
+    <h3>Beam calibration</h3>
+    <label class="check"><input type="checkbox" id="opManual"> Manual mode (PID off)</label>
+    <div class="field">
+      <label for="opAngle">Manual tilt</label><output id="opAngleVal">0°</output>
+      <input type="range" id="opAngle" min="-15" max="15" step="0.5" value="0">
+    </div>
+    <div class="field">
+      <label for="opLevel">Servo angle that levels the beam</label><output id="opLevelVal">–</output>
+      <input type="range" id="opLevel" min="60" max="110" step="0.5" value="85">
+    </div>
+    <div class="field">
+      <label for="opLimit">Maximum tilt</label><output id="opLimitVal">–</output>
+      <input type="range" id="opLimit" min="5" max="20" step="0.5" value="15">
+    </div>
+    <p class="note">With a positive manual tilt the ball must move away from the sensor. If it comes closer, flip the direction.</p>
+    <div class="row">
+      <button class="btn" id="opFlip">Flip direction</button>
+      <button class="btn" id="opResetI">Clear integral</button>
+      <button class="btn primary" id="opSave">Save to the Arduino</button>
+    </div>
+    <p class="note" id="opSaveNote">Stores the level angle, the direction, the maximum tilt and the current gains as start-up values.</p>
+  </section>
+
+  <section>
+    <h3>Public event</h3>
+    <label class="check"><input type="checkbox" id="opIdle" checked> Automatic demo after 90 s with nobody touching anything</label>
+    <label class="check"><input type="checkbox" id="opIdleReset" checked> When the demo starts, go back to the PID recipe</label>
+    <label class="check"><input type="checkbox" id="opCompHints"> Keep the coach hints during the competition</label>
+    <div class="row">
+      <button class="btn" id="opClearRecord">Clear record</button>
+      <button class="btn" id="opClearRank">Clear the leaderboard</button>
+    </div>
+    <p class="note" id="opRankNote"></p>
+  </section>
+
+  <section>
+    <h3>Simulator</h3>
+    <div class="field">
+      <label for="opBias">Simulated beam tilt error</label><output id="opBiasVal">1,5°</output>
+      <input type="range" id="opBias" min="-3" max="3" step="0.1" value="1.5">
+    </div>
+    <div class="field">
+      <label for="opNoise">Simulated sensor noise</label><output id="opNoiseVal">6 mm</output>
+      <input type="range" id="opNoise" min="0" max="15" step="1" value="6">
+    </div>
+    <p class="note">The tilt error imitates a beam that is not perfectly level: that is why P + D settles a few millimetres short and the I corrects it.</p>
+  </section>
+
+  <section>
+    <h3>Shortcuts</h3>
+    <p class="note">Spacebar: stop or start. Esc: close panels.</p>
+  </section>
+</aside>
+
+<script>
+"use strict";
+/* =====================================================================
+   CONFIGURATION (the Arduino overwrites it on connecting, with #CFG)
+   ===================================================================== */
+const R_BALL = 20;                       // ball radius [mm]
+const cfg = { spMin: 70, spMax: 210, posMin: 42, posMax: 238, uMax: 15, level: 85, dir: -1 };
+const DT_SIM = 0.034;                    // simulator period [s]
+const WINDOW_S = 20;                     // seconds visible on the charts
+const BAND_MM = 10;                      // good zone for the challenge
+const PRESETS = [
+  { id: 'p',    name: 'P only',    kp: 0.10, ki: 0.00, kd: 0.00, msg: 'P only: the ball goes back and forth for ever because nothing brakes it. Raise the D.', tone: 'p' },
+  { id: 'pd',   name: 'P + D',     kp: 0.10, ki: 0.00, kd: 0.06, msg: 'With D the ball brakes and stops, though it usually settles a few millimetres short of the target.', tone: 'd' },
+  { id: 'pid',  name: 'PID',       kp: 0.10, ki: 0.04, kd: 0.06, msg: 'The I corrects that last little bit: now the ball reaches the target.', tone: 'i' },
+  { id: 'hiI',  name: 'Too much I',   kp: 0.10, ki: 0.15, kd: 0.06, msg: 'Too much I: it piles up so much push that the ball overshoots before coming back.', tone: 'i' },
+  { id: 'nerv', name: 'Jittery',  kp: 0.25, ki: 0.00, kd: 0.04, msg: 'Lots of P and little D: it reacts far too hard and oscillates. Lower the P or raise the D.', tone: 'p' },
+  { id: 'lazy', name: 'Sluggish',  kp: 0.03, ki: 0.00, kd: 0.08, msg: 'Little P and lots of D: the beam hardly tilts, the ball crawls and stays far from the target.', tone: 'd' },
+];
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+function fmt(v, dec) {
+  if (!isFinite(v)) return '–';
+  let s = v.toFixed(dec);
+  if (/^-0(\.0+)?$/.test(s)) s = s.slice(1);
+  return s.replace('-', '−');
+}
+const fmtSigned = (v, dec) => (v > 0.0001 ? '+' : '') + fmt(v, dec);
+function setPct(el) {
+  const p = (el.value - el.min) / (el.max - el.min) * 100;
+  el.style.setProperty('--pct', p + '%');
+}
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const COL = {};
+['--ink','--ink-2','--ball','--rig','--beam','--p','--i','--d','--line','--alarm'].forEach(k => COL[k.slice(2)] = cssVar(k));
+
+/* =====================================================================
+   CONTROLLER (exact copy of the firmware, for the simulator)
+   ===================================================================== */
+class Controller {
+  constructor() {
+    this.kp = 0.10; this.ki = 0.04; this.kd = 0.06; this.sp = 140;
+    this.uMax = 15; this.manual = 0; this.mode = 1; this.dir = -1; this.level = 85;
+    this.alpha = 0.35; this.beta = 0.05; this.gamma = 0.001; this.bh = 0; this.kModel = 83.5; this.jumpMM = 60; this.iMax = 8; this.endMM = 10;
+    this.reset(); this.obsInit = false; this.buf = []; this.jump = 0; this.u = 0; this.xh = 140; this.vh = 0;
+  }
+  reset() { this.i = 0; this.p = 0; this.d = 0; }
+  command(line) {
+    const c = line[0], v = parseFloat(line.slice(1));
+    switch (c) {
+      case 'P': this.kp = clamp(v, 0, 5); break;
+      case 'I': this.ki = clamp(v, 0, 5); if (this.ki === 0) this.i = 0; break;
+      case 'D': this.kd = clamp(v, 0, 5); break;
+      case 'S': this.sp = clamp(v, cfg.spMin, cfg.spMax); break;
+      case 'A': this.manual = clamp(v, -this.uMax, this.uMax); break;
+      case 'L': this.uMax = clamp(v, 1, 20); break;
+      case 'N': this.level = clamp(v, 30, 150); break;
+      case 'X': this.dir = v < 0 ? -1 : 1; this.reset(); break;
+      case 'R': this.i = 0; break;
+      case 'M': { const m = clamp(Math.round(v), 0, 2); if (m !== this.mode) this.reset(); if (m === 2) this.manual = 0; this.mode = m; break; }
+    }
+  }
+  step(raw, dt) {
+    this.buf.push(raw); if (this.buf.length > 3) this.buf.shift();
+    const z = this.buf.length < 3 ? raw : [...this.buf].sort((a, b) => a - b)[1];
+    if (!this.obsInit) { this.xh = z; this.vh = 0; this.obsInit = true; }
+    // Model a = K*(u + tilt error); the tilt error estimates itself. Next to an end stop only the measurement is used.
+    const atFar = z >= cfg.posMax - this.endMM, atNear = z <= cfg.posMin + this.endMM;
+    const a = (atFar || atNear) ? 0 : this.kModel * (this.u + this.bh);
+    this.xh += this.vh * dt + 0.5 * a * dt * dt;
+    this.vh += a * dt;
+    let r = z - this.xh;
+    if (Math.abs(r) > this.jumpMM) { if (++this.jump >= 2) { this.xh = z; this.vh = 0; this.jump = 0; r = 0; } }
+    else this.jump = 0;
+    this.xh += this.alpha * r;
+    this.vh += (this.beta / dt) * r;
+    if (!atFar && !atNear) this.bh = clamp(this.bh + 2 * this.gamma * r / (this.kModel * dt * dt), -5, 5);
+    if (atFar && this.vh > 0) this.vh = 0;
+    if (atNear && this.vh < 0) this.vh = 0;
+    this.xh = clamp(this.xh, cfg.posMin - 20, cfg.posMax + 20);
+    let u = 0;
+    if (this.mode === 1) {
+      const e = this.sp - this.xh;
+      this.p = this.kp * e;
+      this.d = -this.kd * this.vh;
+      const uTry = this.p + this.i + this.d;
+      const up = uTry > this.uMax && e > 0, down = uTry < -this.uMax && e < 0;
+      if (!up && !down) this.i += this.ki * e * dt;
+      this.i = clamp(this.i, -this.iMax, this.iMax);
+      u = clamp(this.p + this.i + this.d, -this.uMax, this.uMax);
+    } else if (this.mode === 2) { this.reset(); u = clamp(this.manual, -this.uMax, this.uMax); }
+    else { this.reset(); u = 0; }
+    this.u = u;
+    return { pos: this.xh, sp: this.sp, u, p: this.p, i: this.i, d: this.d, mode: this.mode, raw, ok: 1, bias: this.bh };
+  }
+}
+
+/* =====================================================================
+   SIMULATED PLANT (identified model of the rig)
+   ===================================================================== */
+class Plant {
+  constructor() { this.K = 83.5; this.bias = 1.5; this.tau = 0.05; this.rate = 300; this.c = 0.3; this.noise = 6; this.x = 100; this.v = 0; this.th = 0; }
+  advance(uCmd, T) {
+    const h = 0.001, n = Math.round(T / h);
+    for (let k = 0; k < n; k++) {
+      const dth = clamp((uCmd - this.th) / this.tau, -this.rate, this.rate);
+      this.th += dth * h;
+      const a = this.K * (this.th + this.bias) - this.c * this.v;
+      this.v += a * h; this.x += this.v * h;
+      if (this.x < cfg.posMin) { this.x = cfg.posMin; this.v = -0.2 * this.v; }
+      if (this.x > cfg.posMax) { this.x = cfg.posMax; this.v = -0.2 * this.v; }
+    }
+  }
+  measure() {
+    const g = Math.sqrt(-2 * Math.log(Math.random() + 1e-12)) * Math.cos(2 * Math.PI * Math.random());
+    let z = this.x + g * this.noise;
+    if (Math.random() < 0.02) z += (Math.random() < 0.5 ? -1 : 1) * 60;
+    return Math.round(z);
+  }
+  kick() { this.v += (this.x > (cfg.posMin + cfg.posMax) / 2 ? -1 : 1) * (250 + Math.random() * 150); }
+}
+
+/* =====================================================================
+   GLOBAL STATE
+   ===================================================================== */
+const state = {
+  source: 'none',          // 'none' | 'sim' | 'serial'
+  running: true,
+  manual: false,
+  kp: 0.10, ki: 0.04, kd: 0.06, sp: 140,
+  samples: [], last: null,
+  hzCount: 0, hz: 0, lastDataMs: 0,
+  resets: 0, readySeen: false,
+  demo: false, demoIdx: 0, demoNext: 0,
+  lastInteraction: performance.now(),
+  presetMsgUntil: 0,
+};
+let sim = null;             // { ctrl, plant, acc, t }
+
+/* =====================================================================
+   SERIAL PORT (Web Serial API, Chrome/Edge)
+   ===================================================================== */
+const serial = { port: null, reader: null, writer: null, closed: null, buf: '', pending: new Map(), timer: null };
+
+async function connectSerial(port) {
+  if (!('serial' in navigator)) {
+    showAlert('This browser cannot use the USB port. Open the page with Google Chrome or Microsoft Edge.');
+    return;
+  }
+  try {
+    if (!port) port = await navigator.serial.requestPort();
+  } catch (e) { return; }                    // the user closed the dialog
+  await stopSim();
+  await disconnectSerial();
+  try {
+    await port.open({ baudRate: 115200 });
+  } catch (e) {
+    showAlert('The port could not be opened. Close the Serial Monitor of the Arduino IDE (or any other program using it) and try again.');
+    return;
+  }
+  serial.port = port;
+  serial.writer = port.writable.getWriter();
+  state.resets = 0; state.readySeen = false;
+  setSource('serial');
+  setStatus('wait', 'Waiting for the Arduino…');
+  readLoop();
+  // If the Arduino does not reset when the port opens, ask for the configuration anyway
+  setTimeout(() => { if (state.source === 'serial' && !state.last) sendNow('?'); }, 2500);
+}
+
+async function readLoop() {
+  const decoder = new TextDecoderStream();
+  serial.closed = serial.port.readable.pipeTo(decoder.writable).catch(() => {});
+  serial.reader = decoder.readable.getReader();
+  try {
+    while (true) {
+      const { value, done } = await serial.reader.read();
+      if (done) break;
+      serial.buf += value;
+      let idx;
+      while ((idx = serial.buf.indexOf('\n')) >= 0) {
+        const line = serial.buf.slice(0, idx).trim();
+        serial.buf = serial.buf.slice(idx + 1);
+        if (line) handleLine(line);
+      }
+      if (serial.buf.length > 2000) serial.buf = '';
+    }
+  } catch (e) { /* disconnection */ }
+  if (state.source === 'serial') {
+    await disconnectSerial();
+    setSource('none');
+    showAlert('The connection with the Arduino was lost. Check the USB cable and press "Connect Arduino".');
+  }
+}
+
+async function disconnectSerial() {
+  const s = serial;
+  try { if (s.reader) { await s.reader.cancel(); s.reader.releaseLock(); } } catch (e) {}
+  try { if (s.closed) await s.closed; } catch (e) {}
+  try { if (s.writer) s.writer.releaseLock(); } catch (e) {}
+  try { if (s.port) await s.port.close(); } catch (e) {}
+  s.port = s.reader = s.writer = s.closed = null; s.buf = ''; s.pending.clear();
+}
+
+async function sendNow(line) {
+  if (state.source === 'sim' && sim) { sim.ctrl.command(line); return; }
+  if (state.source !== 'serial' || !serial.writer) return;
+  try { await serial.writer.write(new TextEncoder().encode(line + '\n')); } catch (e) {}
+}
+// Rate-limited sending: while dragging a slider only the latest value goes out, every 60 ms
+function send(key, value) {
+  const line = key + (value === undefined ? '' : value);
+  if (state.source === 'sim') { sim && sim.ctrl.command(line); return; }
+  serial.pending.set(key, line);
+  if (!serial.timer) serial.timer = setTimeout(flushPending, 60);
+}
+async function flushPending() {
+  serial.timer = null;
+  const lines = [...serial.pending.values()]; serial.pending.clear();
+  for (const l of lines) await sendNow(l);
+}
+
+function handleLine(line) {
+  if (line[0] === '$') {
+    const f = line.slice(1).split(',').map(Number);
+    if (f.length < 10 || f.some(v => !isFinite(v))) return;
+    pushSample({ t: f[0] / 1000, pos: f[1], sp: f[2], u: f[3], p: f[4], i: f[5], d: f[6], mode: f[7], raw: f[8], ok: f[9], bias: f.length > 10 ? f[10] : NaN });
+  } else if (line.startsWith('#CFG')) {
+    const f = line.split(',').slice(1).map(Number);
+    if (f.length >= 12) {
+      Object.assign(cfg, { spMin: f[0], spMax: f[1], posMin: f[2], posMax: f[3], uMax: f[4], level: f[9], dir: f[11] });
+      state.kp = f[5]; state.ki = f[6]; state.kd = f[7]; state.sp = f[8];
+      state.running = f[10] !== 0; state.manual = f[10] === 2;
+      state.samples = [];
+      syncUIFromState();
+      setStatus('serial', 'Arduino connected');
+      hideAlert();
+    }
+  } else if (line.startsWith('#READY')) {
+    if (state.readySeen) { state.resets++; updateOpInfo(); }
+    state.readySeen = true;
+  } else if (line.startsWith('#ERR,SENSOR')) {
+    showAlert('The distance sensor is not answering. Check the SDA and SCL wires and the power to the sensor.');
+  } else if (line.startsWith('#SAVED')) {
+    $('opSaveNote').textContent = 'Saved. The Arduino will start up with these values.';
+  }
+}
+
+/* =====================================================================
+   SIMULADOR
+   ===================================================================== */
+async function startSim() {
+  await disconnectSerial();
+  Object.assign(cfg, { spMin: 70, spMax: 210, posMin: 42, posMax: 238, uMax: 15, level: 85, dir: -1 });
+  const ctrl = new Controller();
+  const plant = new Plant();
+  plant.bias = parseFloat($('opBias').value); plant.noise = parseFloat($('opNoise').value);
+  sim = { ctrl, plant, acc: 0, t: 0, lastMs: performance.now() };
+  setSource('sim');
+  setStatus('sim', 'Simulator');
+  // Send the current state of the interface to the simulated controller
+  ['P' + state.kp, 'I' + state.ki, 'D' + state.kd, 'S' + state.sp, 'L' + cfg.uMax,
+   'M' + (state.running ? (state.manual ? 2 : 1) : 0)].forEach(l => ctrl.command(l));
+  syncUIFromState();
+  hideAlert();
+}
+async function stopSim() { sim = null; if (state.source === 'sim') setSource('none'); }
+
+function simTick(nowMs) {
+  if (!sim) return;
+  let el = (nowMs - sim.lastMs) / 1000; sim.lastMs = nowMs;
+  sim.acc += Math.min(el, 0.25);
+  let n = 0;
+  while (sim.acc >= DT_SIM && n < 8) {
+    sim.acc -= DT_SIM; n++;
+    const raw = sim.plant.measure();
+    const s = sim.ctrl.step(raw, DT_SIM);
+    sim.plant.advance(sim.ctrl.u, DT_SIM);
+    sim.t += DT_SIM;
+    s.t = sim.t;
+    pushSample(s);
+  }
+}
+
+/* =====================================================================
+   DATA
+   ===================================================================== */
+function pushSample(s) {
+  state.last = s;
+  state.samples.push(s);
+  const t0 = s.t - WINDOW_S - 1;
+  while (state.samples.length && state.samples[0].t < t0) state.samples.shift();
+  // if the clock jumps backwards (Arduino reset), start again
+  if (state.samples.length > 1 && state.samples[state.samples.length - 2].t > s.t) state.samples = [s];
+  state.hzCount++;
+  state.lastDataMs = performance.now();
+  if (state.source === 'serial' && s.ok && $('alert').dataset.kind === 'nodata') hideAlert();
+  if (state.source === 'serial' && s.ok && $('alert').textContent.startsWith('The distance sensor')) hideAlert();
+  retoUpdate(s);
+  compUpdate(s);
+}
+
+/* =====================================================================
+   INTERFACE: source and status
+   ===================================================================== */
+function setSource(src) {
+  if (comp.state === 'run' && src !== state.source) compEnd('The connection dropped, so this go does not count.');
+  state.source = src;
+  state.samples = []; state.last = null;
+  $('empty').hidden = src !== 'none';
+  $('spRow').dataset.off = src === 'none';
+  $('simTag').hidden = src !== 'sim';
+  $('btnKick').hidden = src !== 'sim';
+  $('btnSim').textContent = src === 'sim' ? 'Leave the simulator' : 'Simulator';
+  $('btnConnect').textContent = src === 'serial' ? 'Disconnect' : 'Connect Arduino';
+  if (src === 'none') { setStatus('none', 'Not connected'); stopDemo(); }
+  updateOpInfo();
+}
+function setStatus(s, txt) { $('status').dataset.s = s; $('statusTxt').textContent = txt; }
+function showAlert(msg, kind = '') { const a = $('alert'); a.textContent = msg; a.dataset.kind = kind; a.hidden = false; }
+function hideAlert() { const a = $('alert'); a.hidden = true; a.dataset.kind = ''; }
+
+/* =====================================================================
+   SLIDERS AND BUTTONS
+   ===================================================================== */
+const knobs = [['kp', 'P', 3], ['ki', 'I', 3], ['kd', 'D', 3]];
+function syncUIFromState() {
+  for (const [k, , dec] of knobs) { $(k).value = state[k]; setPct($(k)); $(k + 'Val').textContent = fmt(state[k], dec); }
+  const sp = $('sp'); sp.min = cfg.spMin; sp.max = cfg.spMax; sp.value = state.sp; setPct(sp);
+  $('btnRun').dataset.running = state.running; $('btnRun').textContent = state.running ? 'Stop' : 'Start';
+  $('opLevel').value = cfg.level; $('opLevelVal').textContent = fmt(cfg.level, 1) + '°';
+  $('opLimit').value = cfg.uMax; $('opLimitVal').textContent = fmt(cfg.uMax, 1) + '°';
+  $('opAngle').min = -cfg.uMax; $('opAngle').max = cfg.uMax;
+  $('opManual').checked = state.manual;
+  ['opLevel', 'opLimit', 'opAngle', 'opBias', 'opNoise'].forEach(id => setPct($(id)));
+  markPreset();
+  layoutSlider();
+  updateOpInfo();
+}
+for (const [k, key, dec] of knobs) {
+  $(k).addEventListener('input', e => {
+    state[k] = parseFloat(e.target.value); setPct(e.target);
+    $(k + 'Val').textContent = fmt(state[k], dec);
+    send(key, state[k].toFixed(4));
+    reto.gainsChanged = true;
+    markPreset();
+  });
+}
+function setSetpoint(v, fromDemo = false, force = false) {
+  if (comp.state === 'run' && !force) return;      // during a competition the target is off limits
+  v = clamp(Math.round(v), cfg.spMin, cfg.spMax);
+  if (v === state.sp) return;
+  state.sp = v; const sp = $('sp'); sp.value = v; setPct(sp);
+  send('S', v);
+  if (comp.state !== 'run') retoArm(v, fromDemo);
+}
+$('sp').addEventListener('input', e => setSetpoint(parseFloat(e.target.value)));
+
+function applyPreset(p, showMsg = true) {
+  state.kp = p.kp; state.ki = p.ki; state.kd = p.kd;
+  send('P', p.kp.toFixed(4)); send('I', p.ki.toFixed(4)); send('D', p.kd.toFixed(4));
+  if (p.ki === 0) send('R');
+  syncUIFromState();
+  reto.gainsChanged = true;
+  if (showMsg) { setCoach(p.msg, p.tone, true); state.presetMsgUntil = performance.now() + 7000; }
+}
+function markPreset() {
+  document.querySelectorAll('#presets button').forEach(b => {
+    const p = PRESETS.find(x => x.id === b.dataset.id);
+    const on = Math.abs(p.kp - state.kp) < 1e-6 && Math.abs(p.ki - state.ki) < 1e-6 && Math.abs(p.kd - state.kd) < 1e-6;
+    b.setAttribute('aria-pressed', on);
+  });
+}
+PRESETS.forEach(p => {
+  const b = document.createElement('button'); b.textContent = p.name; b.dataset.id = p.id;
+  b.addEventListener('click', () => applyPreset(p));
+  $('presets').appendChild(b);
+});
+
+function setRunning(on) {
+  state.running = on;
+  if (on) { state.manual = false; $('opManual').checked = false; }
+  send('M', on ? 1 : 0);
+  $('btnRun').dataset.running = on; $('btnRun').textContent = on ? 'Stop' : 'Start';
+}
+$('btnRun').addEventListener('click', () => setRunning(!state.running));
+$('btnDemo').addEventListener('click', () => state.demo ? stopDemo() : startDemo());
+$('btnKick').addEventListener('click', () => { if (sim) sim.plant.kick(); });
+
+$('btnConnect').addEventListener('click', async () => {
+  if (state.source === 'serial') { await disconnectSerial(); setSource('none'); } else connectSerial();
+});
+$('btnSim').addEventListener('click', () => state.source === 'sim' ? stopSim() : startSim());
+document.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => b.dataset.act === 'sim' ? startSim() : connectSerial()));
+$('btnHelp').addEventListener('click', () => { $('help').hidden = false; $('help').querySelector('[data-close]').focus(); });
+$('btnOp').addEventListener('click', () => { $('op').hidden = !$('op').hidden; updateOpInfo(); });
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => { $('help').hidden = true; $('op').hidden = true; }));
+$('help').addEventListener('click', e => { if (e.target.id === 'help') $('help').hidden = true; });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { $('help').hidden = true; $('op').hidden = true; if (!$('win').hidden) winClose(); }
+  if (e.code === 'Space' && !['INPUT', 'BUTTON'].includes(document.activeElement.tagName)) { e.preventDefault(); setRunning(!state.running); }
+});
+
+/* ----- operator panel ----- */
+function rangeOut(id, outId, unit, dec, cb) {
+  $(id).addEventListener('input', e => { setPct(e.target); const v = parseFloat(e.target.value); $(outId).textContent = fmt(v, dec) + unit; cb(v); });
+}
+rangeOut('opLevel', 'opLevelVal', '°', 1, v => { cfg.level = v; send('N', v.toFixed(1)); });
+rangeOut('opLimit', 'opLimitVal', '°', 1, v => { cfg.uMax = v; send('L', v.toFixed(1)); $('opAngle').min = -v; $('opAngle').max = v; });
+rangeOut('opAngle', 'opAngleVal', '°', 1, v => { if (state.manual) send('A', v.toFixed(1)); });
+rangeOut('opBias', 'opBiasVal', '°', 1, v => { if (sim) sim.plant.bias = v; });
+rangeOut('opNoise', 'opNoiseVal', ' mm', 0, v => { if (sim) sim.plant.noise = v; });
+$('opManual').addEventListener('change', e => {
+  state.manual = e.target.checked;
+  if (state.manual) { stopDemo(); send('M', 2); $('opAngle').value = 0; setPct($('opAngle')); $('opAngleVal').textContent = '0°'; }
+  else send('M', state.running ? 1 : 0);
+});
+$('opFlip').addEventListener('click', () => { cfg.dir = -cfg.dir; send('X', cfg.dir); updateOpInfo(); });
+$('opResetI').addEventListener('click', () => send('R'));
+$('opSave').addEventListener('click', () => {
+  if (state.source !== 'serial') { $('opSaveNote').textContent = 'Connect the Arduino in order to save.'; return; }
+  sendNow('W');
+});
+$('opClearRecord').addEventListener('click', () => { reto.best = null; renderReto(); });
+$('opClearRank').addEventListener('click', () => {
+  if (!ranking.length) { $('opRankNote').textContent = 'The leaderboard is already empty.'; return; }
+  if (!confirm('Clear the whole leaderboard? This cannot be undone.')) return;
+  ranking = []; saveRanking(); renderRank();
+  $('opRankNote').textContent = 'Leaderboard cleared.';
+});
+
+function updateOpInfo() {
+  $('opSrc').textContent = { none: 'Not connected', sim: 'Simulator', serial: 'Arduino over USB' }[state.source];
+  $('opRaw').textContent = state.last ? state.last.raw + ' mm' : '–';
+  $('opHz').textContent = state.hz ? state.hz : '–';
+  $('opDir').textContent = cfg.dir > 0 ? '+1' : '−1';
+  $('opBiasEst').textContent = state.last && isFinite(state.last.bias) ? fmtSigned(state.last.bias, 2) + '°' : '–';
+  $('opResets').textContent = state.resets;
+  $('opResetNote').textContent = state.resets > 0
+    ? 'The Arduino reset on its own. That is usually the servo pulling on the supply: power it separately with a common ground.' : '';
+  $('opResetNote').className = 'note' + (state.resets > 0 ? ' danger' : '');
+}
+
+/* =====================================================================
+   CHALLENGE: settling time and overshoot
+   ===================================================================== */
+const reto = { state: 'idle', armTimer: null, t0: 0, sp: 0, dir: 1, over: 0, inBand: null, time: null, gainsChanged: false, demo: false, best: null, restSp: 140 };
+function retoArm(sp, fromDemo) {
+  clearTimeout(reto.armTimer);
+  reto.armTimer = setTimeout(() => {
+    if (!state.last || !state.running || state.manual) return;
+    if (Math.abs(sp - state.last.pos) < 30) return;
+    Object.assign(reto, { state: 'run', t0: state.last.t, sp, dir: Math.sign(sp - state.last.pos), over: 0, inBand: null, time: null, gainsChanged: false, demo: fromDemo });
+    renderReto();
+  }, 250);
+}
+function retoUpdate(s) {
+  if (reto.state !== 'run') return;
+  if (s.mode !== 1) { reto.state = 'idle'; renderReto(); return; }
+  const e = s.pos - reto.sp;
+  reto.over = Math.max(reto.over, reto.dir * e);
+  if (Math.abs(e) < BAND_MM) {
+    if (reto.inBand === null) reto.inBand = s.t;
+    if (s.t - reto.inBand >= 1.5) {
+      reto.state = 'done'; reto.time = reto.inBand - reto.t0;
+      reto.newBest = false;
+      if (!reto.gainsChanged && !reto.demo && (!reto.best || reto.time < reto.best.time)) {
+        reto.best = { time: reto.time, over: reto.over, kp: state.kp, ki: state.ki, kd: state.kd };
+        reto.newBest = true;
+      }
+      renderReto();
+    }
+  } else reto.inBand = null;
+  if (reto.state === 'run' && s.t - reto.t0 > 20) { reto.state = 'fail'; renderReto(); }
+}
+function renderReto() {
+  const m = $('retoMsg');
+  if (reto.state === 'idle') { m.textContent = 'Move the target by at least 3 cm and we will time how long the ball takes to settle in the good zone.'; }
+  else if (reto.state === 'run') { m.textContent = 'Timing… it has to stay in the good zone for 1.5 s in a row.'; $('retoTime').textContent = '…'; $('retoOver').textContent = '…'; }
+  else if (reto.state === 'done') {
+    m.textContent = reto.newBest ? 'New record! Can anyone beat it?' : (reto.gainsChanged ? 'You changed P, I or D halfway through: this time does not count.' : 'Tune P, I and D and try to bring the time down.');
+    $('retoTime').textContent = fmt(reto.time, 1) + ' s';
+    $('retoOver').textContent = Math.round(Math.max(0, reto.over)) + ' mm';
+  } else if (reto.state === 'fail') {
+    m.textContent = 'It did not settle within 20 s. Tune P, I and D and try again.';
+    $('retoTime').textContent = '–'; $('retoOver').textContent = Math.round(Math.max(0, reto.over)) + ' mm';
+  }
+  const b = reto.best;
+  $('retoRec').textContent = b ? fmt(b.time, 1) + ' s' : '–';
+  $('retoBest').textContent = b ? `Record set with P ${fmt(b.kp, 3)}, I ${fmt(b.ki, 3)}, D ${fmt(b.kd, 3)}` : 'No record yet. Be the first!';
+}
+
+/* =====================================================================
+   COMPETITION: tuning the PID against the clock
+   ===================================================================== */
+const COMP_HOLD_S  = 3;                  // seconds in a row inside the good zone
+const COMP_LIMIT_S = 120;                // maximum length of a go
+const COMP_JUMP_MM = 70;                 // the target lands at least this far from the ball
+const RANK_KEY = 'balance_the_ball_ranking_v1';
+const RANK_MAX = 100;
+const COMP_MSG0 = 'Press "Start": you get a random target and random settings, and they are almost never good. Move P, I and D until the ball sits still on the target for ' + COMP_HOLD_S + ' seconds in a row. The fastest time wins.';
+
+/* Starting settings. All of them are unstable or very badly damped, so nobody
+   wins without touching anything; checked in simulation with the beam level and
+   with a tilt error of +/-1.5 deg. */
+const COMP_START = [
+  { id: 'sinD', kp: [0.09, 0.18], ki: [0.00, 0.02], kd: [0.000, 0.005], msg: 'You have drawn a PID with no brakes.' },
+  { id: 'nerv', kp: [0.22, 0.30], ki: [0.00, 0.02], kd: [0.005, 0.020], msg: 'You have drawn an extremely jittery PID.' },
+  { id: 'hiI',  kp: [0.06, 0.14], ki: [0.08, 0.18], kd: [0.000, 0.010], msg: 'You have drawn a PID with far too much memory.' },
+  { id: 'todo', kp: [0.20, 0.30], ki: [0.08, 0.18], kd: [0.010, 0.030], msg: 'You have drawn a PID with everything maxed out.' },
+];
+
+const comp = { state: 'idle', t0: null, tNow: 0, inBand: null, hold: 0, time: null,
+               sp: 0, startMsg: '', msg: '', pending: null, pos: 0, lastId: null, savedAs: '' };
+
+/* ----- console tabs ----- */
+function setTab(id) {
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === id)));
+  ['Play', 'Comp', 'Rank'].forEach(k => { $('pane' + k).hidden = k.toLowerCase() !== id; });
+  if (id === 'rank') renderRank();
+}
+document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+function lockControls(on) {
+  $('sp').disabled = on;
+  $('presets').dataset.lock = String(on);
+  $('btnDemo').disabled = on;
+}
+
+function compStart() {
+  if (state.source === 'none') {
+    comp.msg = 'Connect the Arduino or open the simulator in order to compete.'; compRender(); return;
+  }
+  stopDemo();
+  if (state.manual) { state.manual = false; $('opManual').checked = false; }
+  if (!state.running) setRunning(true); else send('M', 1);
+
+  // random target, far from where the ball is now
+  const pos = state.last ? state.last.pos : (cfg.posMin + cfg.posMax) / 2;
+  const lo = cfg.spMin + 8, hi = cfg.spMax - 8;
+  let sp = 0;
+  for (let k = 0; k < 80; k++) {
+    sp = Math.round(lo + Math.random() * (hi - lo));
+    if (Math.abs(sp - pos) >= COMP_JUMP_MM) break;
+  }
+  // random starting gains within one bad archetype
+  const a = COMP_START[Math.floor(Math.random() * COMP_START.length)];
+  const pick = r => Math.round((r[0] + Math.random() * (r[1] - r[0])) / 0.005) * 0.005;
+  state.kp = pick(a.kp); state.ki = pick(a.ki); state.kd = pick(a.kd);
+  send('P', state.kp.toFixed(4)); send('I', state.ki.toFixed(4)); send('D', state.kd.toFixed(4)); send('R');
+  state.sp = sp; send('S', sp);
+
+  Object.assign(comp, { state: 'run', t0: null, tNow: 0, inBand: null, hold: 0, time: null,
+                        sp, startMsg: a.msg, msg: '', pending: null, savedAs: '' });
+  reto.state = 'idle'; renderReto();
+  syncUIFromState();
+  lockControls(true);
+  setTab('comp');
+  compRender();
+  setCoach(compCoachText(), 'ink', true);
+}
+
+function compEnd(msg) {
+  comp.state = 'idle'; comp.msg = msg; comp.inBand = null; comp.hold = 0;
+  lockControls(false); compRender();
+}
+
+function compUpdate(s) {
+  if (comp.state !== 'run') return;
+  if (s.mode !== 1) return compEnd('Control stopped, so this go does not count. Start again whenever you like.');
+  if (comp.t0 === null) comp.t0 = s.t;
+  if (s.t < comp.t0) return compEnd('The Arduino reset, so this go does not count. Start again.');
+  comp.tNow = s.t - comp.t0;
+  if (Math.abs(s.pos - s.sp) < BAND_MM) {
+    if (comp.inBand === null) comp.inBand = s.t;
+    comp.hold = s.t - comp.inBand;
+    if (comp.hold >= COMP_HOLD_S) return compWin(comp.inBand - comp.t0);
+  } else { comp.inBand = null; comp.hold = 0; }
+  if (comp.tNow > COMP_LIMIT_S) compEnd('The two minutes are up. Better luck next time!');
+}
+
+function compWin(time) {
+  comp.state = 'done'; comp.time = time; comp.hold = COMP_HOLD_S;
+  lockControls(false);
+  comp.pending = { id: Date.now(), time, kp: state.kp, ki: state.ki, kd: state.kd, sp: comp.sp };
+  comp.pos = ranking.filter(r => r.time < time).length + 1;
+  compRender();
+  openWin();
+}
+
+function compCoachText() {
+  if (comp.state !== 'run') return '\u00a0';
+  if (comp.inBand !== null) return 'That is it! Hold it for ' + Math.max(1, Math.ceil(COMP_HOLD_S - comp.hold)) + ' s more…';
+  return 'Competition: take the ball to ' + Math.round(comp.sp) + ' mm by moving P, I and D. ' + fmt(comp.tNow, 1) + ' s';
+}
+
+function compRender() {
+  const run = comp.state === 'run', done = comp.state === 'done';
+  const b = $('compBtn');
+  const bt = run ? 'Give up' : (done ? 'Play again' : 'Start');
+  if (b.textContent !== bt) b.textContent = bt;
+  b.dataset.on = String(run);
+  set$('compGoal', (run || done) ? Math.round(comp.sp) + ' mm' : '–');
+  set$('compTime', run ? fmt(comp.tNow, 1) + ' s' : (done ? fmt(comp.time, 1) + ' s' : '–'));
+  $('compHold').style.width = (run ? clamp(comp.hold / COMP_HOLD_S, 0, 1) * 100 : (done ? 100 : 0)) + '%';
+  set$('compHead', run ? 'Go in progress' : (done ? 'Done!' : 'Tune the PID against the clock'));
+  let m;
+  if (run) m = comp.startMsg + ' Take the ball to the target and leave it sitting still there for ' + COMP_HOLD_S + ' seconds in a row.';
+  else if (done) m = 'Balanced in ' + fmt(comp.time, 1) + ' s' + (comp.savedAs ? ', saved as ' + comp.savedAs + '.' : '.') + ' Press "Play again" for another go.';
+  else m = comp.msg || COMP_MSG0;
+  set$('compMsg', m);
+}
+function set$(id, txt) { const el = $(id); if (el.textContent !== txt) el.textContent = txt; }
+
+$('compBtn').addEventListener('click', () => {
+  if (comp.state === 'run') compEnd('Go cancelled.');
+  else compStart();
+});
+
+/* =====================================================================
+   LEADERBOARD
+   ===================================================================== */
+let rankPersist = true;
+function loadRanking() {
+  try {
+    localStorage.setItem(RANK_KEY + '_t', '1'); localStorage.removeItem(RANK_KEY + '_t');
+    const r = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
+    if (!Array.isArray(r)) return [];
+    return r.filter(e => e && typeof e.name === 'string' && isFinite(e.time))
+            .sort((a, b) => a.time - b.time).slice(0, RANK_MAX);
+  } catch (e) { rankPersist = false; return []; }
+}
+let ranking = loadRanking();
+function saveRanking() {
+  try { localStorage.setItem(RANK_KEY, JSON.stringify(ranking)); rankPersist = true; }
+  catch (e) { rankPersist = false; }
+}
+function renderRank() {
+  const ol = $('rankList');
+  ol.textContent = '';
+  ranking.slice(0, 12).forEach((e, k) => {
+    const li = document.createElement('li');
+    if (k < 3) li.dataset.top = String(k + 1);
+    if (comp.lastId && e.id === comp.lastId) li.dataset.me = 'true';
+    const a = document.createElement('span'); a.className = 'pos'; a.textContent = (k + 1) + '.';
+    const b = document.createElement('span'); b.className = 'nm'; b.textContent = e.name;
+    const c = document.createElement('span'); c.className = 'tm'; c.textContent = fmt(e.time, 1) + ' s';
+    li.append(a, b, c); ol.appendChild(li);
+  });
+  set$('rankHead', ranking.length ? 'Competition leaderboard · ' + ranking.length : 'Competition leaderboard');
+  set$('rankNote', !ranking.length
+    ? 'Nobody has competed yet. Go to "Competition" and open the leaderboard.'
+    : (rankPersist
+        ? 'The leaderboard is kept in this browser on this computer. To clear it, see ⚙ Operator settings.'
+        : 'This browser will not store data, so the leaderboard will be lost when the page reloads.'));
+}
+
+/* ----- result dialog ----- */
+function openWin() {
+  const n = ranking.length + 1;
+  $('winTime').textContent = fmt(comp.time, 1) + ' s';
+  $('winTitle').textContent = comp.pos === 1 ? 'Best time so far!' : 'Ball balanced!';
+  $('winPos').textContent = comp.pos === 1
+    ? 'First place out of ' + n
+    : 'Position ' + comp.pos + ' of ' + n;
+  $('winGains').textContent = 'You did it with P ' + fmt(state.kp, 3) + ', I ' + fmt(state.ki, 3) + ', D ' + fmt(state.kd, 3);
+  $('winName').value = '';
+  $('win').hidden = false;
+  setTimeout(() => $('winName').focus(), 30);
+}
+function winClose() { $('win').hidden = true; comp.pending = null; compRender(); }
+function winSave() {
+  if (!comp.pending) return winClose();
+  const name = ($('winName').value || '').trim().toUpperCase().slice(0, 14) || 'ANONYMOUS';
+  ranking.push(Object.assign({ name }, comp.pending));
+  ranking.sort((a, b) => a.time - b.time);
+  ranking = ranking.slice(0, RANK_MAX);
+  comp.lastId = comp.pending.id; comp.savedAs = name; comp.pending = null;
+  saveRanking(); renderRank();
+  $('win').hidden = true;
+  setTab('rank');
+  compRender();
+}
+$('winSave').addEventListener('click', winSave);
+$('winSkip').addEventListener('click', winClose);
+$('winName').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); winSave(); } });
+$('win').addEventListener('click', e => { if (e.target.id === 'win') winClose(); });
+
+/* =====================================================================
+   COACH: hints based on what the ball is doing
+   ===================================================================== */
+let coachCandidate = '', coachCount = 0;
+function setCoach(text, tone, force = false) {
+  const colors = { p: COL.p, i: COL.i, d: COL.d, ok: COL.i, ink: COL.ink, warn: COL.alarm };
+  if (!force) {
+    if (text === coachCandidate) coachCount++; else { coachCandidate = text; coachCount = 1; }
+    if (coachCount < 2) return;
+  }
+  const el = $('coach');
+  if (el.textContent !== text) el.textContent = text;
+  el.style.setProperty('--coach', colors[tone] || COL.line);
+}
+function coachEval() {
+  if (comp.state === 'run' && !$('opCompHints').checked) return setCoach(compCoachText(), 'ink', true);
+  if (performance.now() < state.presetMsgUntil) return;
+  if (state.source === 'none') { $('coach').textContent = '\u00a0'; return; }
+  if (state.manual) return setCoach('Manual mode: the PID is off and the beam obeys the operator panel.', 'warn', true);
+  if (!state.running) return setCoach('Control stopped: the beam stays level and the ball does as it pleases. Press "Start".', 'ink', true);
+  const S = state.samples; if (S.length < 60) return;
+  const tNow = S[S.length - 1].t;
+  const w6 = S.filter(s => s.t > tNow - 6), w3 = S.filter(s => s.t > tNow - 3);
+  let cross = 0, sign = 0, mn = 1e9, mx = -1e9;
+  for (const s of w6) { const e = s.pos - s.sp; mn = Math.min(mn, e); mx = Math.max(mx, e); if (Math.abs(e) > 20) { const g = Math.sign(e); if (sign && g !== sign) cross++; sign = g; } }
+  const e3 = w3.map(s => s.pos - s.sp), mean = e3.reduce((a, b) => a + b, 0) / e3.length;
+  const sd = Math.sqrt(e3.reduce((a, b) => a + (b - mean) ** 2, 0) / e3.length);
+  const sat = w3.filter(s => Math.abs(s.u) >= cfg.uMax - 0.05).length / w3.length;
+  const { kp, ki, kd } = state;
+  if (cross >= 3 && (mx - mn) / 2 > 25) {
+    if (kd < 0.03) return setCoach('The ball goes back and forth because nothing brakes it. Raise the D.', 'd');
+    if (ki > 0.1) return setCoach('The I is piling up too much and the ball overshoots. Lower the I.', 'i');
+    if (kp > 0.18) return setCoach('Too much P: the beam reacts far too hard. Lower the P or raise the D.', 'p');
+    return setCoach('The ball is oscillating. Try raising the D a little or lowering the P.', 'd');
+  }
+  if (Math.abs(mean) < BAND_MM && sd < 8) return setCoach('Ball balanced! Change the target to put it to the test.', 'ok');
+  if (kp < 0.05 && Math.abs(mean) > 25) return setCoach('With so little P the beam barely tilts. Raise the P.', 'p');
+  if (sd < 8 && Math.abs(mean) >= BAND_MM && ki < 0.005) return setCoach(`It almost gets there, but it stops ${Math.round(Math.abs(mean))} mm short. Raise the I a little to correct that.`, 'i');
+  if (sat > 0.5) return setCoach('The beam is at its limit all the time. Lower the P a little.', 'p');
+  if (kd > 0.14 && Math.abs(mean) > 20) return setCoach('That much D brakes too hard: the ball creeps along. Lower the D.', 'd');
+}
+
+/* =====================================================================
+   AUTOMATIC DEMO
+   ===================================================================== */
+const DEMO_SP = [95, 195, 140, 115, 175];
+function startDemo() {
+  if (state.source === 'none' || comp.state === 'run') return;
+  state.demo = true; state.demoNext = 0; $('btnDemo').setAttribute('aria-pressed', 'true');
+  if (!state.running) setRunning(true);
+}
+function stopDemo() { state.demo = false; $('btnDemo').setAttribute('aria-pressed', 'false'); }
+function demoTick(now) {
+  if (state.demo && now >= state.demoNext) {
+    state.demoNext = now + 7000;
+    state.demoIdx = (state.demoIdx + 1) % DEMO_SP.length;
+    setSetpoint(DEMO_SP[state.demoIdx], true);
+  }
+  if (!state.demo && $('opIdle').checked && state.source !== 'none' && state.running && !state.manual
+      && comp.state !== 'run' && $('win').hidden && now - state.lastInteraction > 90000) {
+    if ($('opIdleReset').checked) applyPreset(PRESETS.find(p => p.id === 'pid'), false);
+    startDemo();
+  }
+}
+['pointerdown', 'keydown', 'wheel'].forEach(ev => document.addEventListener(ev, e => {
+  state.lastInteraction = performance.now();
+  if (state.demo && !e.target.closest('#btnDemo')) stopDemo();
+}, { capture: true }));
+
+/* =====================================================================
+   DRAWING: the beam scene
+   ===================================================================== */
+const scene = $('scene'), sctx = scene.getContext('2d');
+const cPos = $('chartPos'), pctx = cPos.getContext('2d');
+const cU = $('chartU'), uctx = cU.getContext('2d');
+let geom = { X0: 0, s: 1, PX: 0, PY: 0, beamY: 0 };
+
+function fitCanvas(c, ctx) {
+  const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+  if (c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return [w, h];
+}
+function computeGeom(W, H) {
+  const L = cfg.posMax + 2 * R_BALL + 16;          // drawn length from the face of the sensor [mm]
+  const mL = Math.max(60, W * 0.07), mR = Math.max(36, W * 0.045);
+  const PY = Math.round(H * 0.60);
+  const sW = (W - mL - mR) / L;
+  const sH = (PY - 64 - 44) / (2 * R_BALL);        // room for the ball and the marker above the beam
+  const s = Math.max(0.4, Math.min(sW, sH));
+  const X0 = mL + ((W - mL - mR) - L * s) / 2;     // face of the sensor
+  const pivotMM = (cfg.posMin + cfg.posMax) / 2 + R_BALL;
+  geom = { X0, s, L, PX: X0 + pivotMM * s, PY };
+}
+function layoutSlider() {
+  const W = scene.clientWidth; if (!W) return;
+  computeGeom(W, scene.clientHeight);
+  const th = 28, sp = $('sp');
+  const a = geom.X0 + (cfg.spMin + R_BALL) * geom.s, b = geom.X0 + (cfg.spMax + R_BALL) * geom.s;
+  sp.style.left = (a - th / 2) + 'px'; sp.style.width = (b - a + th) + 'px';
+}
+function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+
+function drawTower(ctx, PX, PY, H, tw) {
+  // legs: black triangles like the ones on the rig
+  ctx.strokeStyle = COL.beam; ctx.lineWidth = Math.max(5, tw * 0.07); ctx.lineJoin = 'round';
+  const legH = Math.min(tw * 0.55, (H - PY) * 0.45), yb = H - ctx.lineWidth / 2 - 2;
+  for (const sg of [-1, 1]) {
+    ctx.beginPath(); ctx.moveTo(PX + sg * tw * 0.5, yb); ctx.lineTo(PX + sg * tw * 1.45, yb); ctx.lineTo(PX + sg * tw * 0.5, yb - legH); ctx.closePath(); ctx.stroke();
+  }
+  // orange plate with an arch
+  ctx.fillStyle = COL.rig;
+  ctx.beginPath();
+  ctx.moveTo(PX - tw / 2, H + 2); ctx.lineTo(PX - tw / 2, PY);
+  ctx.arc(PX, PY, tw / 2, Math.PI, 0); ctx.lineTo(PX + tw / 2, H + 2); ctx.closePath(); ctx.fill();
+  // window with an X lattice
+  const wx = PX - tw * 0.32, ww = tw * 0.64, wy = PY + tw * 0.42, wh = H - 14 - wy;
+  if (wh > 20) {
+    ctx.fillStyle = cssVar('--stage'); roundRect(ctx, wx, wy, ww, wh, Math.min(10, tw * 0.1)); ctx.fill();
+    ctx.save(); roundRect(ctx, wx, wy, ww, wh, 10); ctx.clip();
+    ctx.strokeStyle = COL.rig; ctx.lineWidth = Math.max(4, tw * 0.08);
+    ctx.beginPath(); ctx.moveTo(wx, wy); ctx.lineTo(wx + ww, wy + wh); ctx.moveTo(wx + ww, wy); ctx.lineTo(wx, wy + wh); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function drawScene() {
+  const [W, H] = fitCanvas(scene, sctx); const ctx = sctx;
+  computeGeom(W, H);
+  const { X0, s, PX, PY, L } = geom;
+  ctx.clearRect(0, 0, W, H);
+  const last = state.last;
+  const u = last ? last.u : 0;
+  const pos = last ? last.pos : (cfg.posMin + cfg.posMax) / 2;
+  const rpx = R_BALL * s, beamT = Math.max(9, 7 * s);
+  const tw = clamp(0.15 * L * s, 60, 150);
+
+  drawTower(ctx, PX, PY, H, tw);
+
+  // --- rotated beam ---
+  ctx.save();
+  ctx.translate(PX, PY);
+  ctx.rotate(u * Math.PI / 180);
+  const xs = X0 - PX, xe = X0 + L * s - PX, top = -beamT / 2;
+  ctx.fillStyle = COL.beam; roundRect(ctx, xs - 6, top, xe - xs + 12, beamT, 4); ctx.fill();
+  // sensor board (with the red laser dot) and far end stop
+  roundRect(ctx, xs - 14, top - 2.2 * rpx, 12, 2.2 * rpx + beamT, 3); ctx.fill();
+  roundRect(ctx, xe + 2, top - 1.6 * rpx, 10, 1.6 * rpx + beamT, 3); ctx.fill();
+  ctx.fillStyle = COL.alarm; ctx.beginPath(); ctx.arc(xs - 2, top - rpx, 3.5, 0, 7); ctx.fill();
+  // target: good zone on the rail plus the marker
+  const xsp = xs + (state.sp + R_BALL) * s;
+  if (last) {
+    ctx.fillStyle = 'rgba(21,33,58,.22)';
+    roundRect(ctx, xs + (state.sp + R_BALL - BAND_MM) * s, top - 5, 2 * BAND_MM * s, 5, 2); ctx.fill();
+    ctx.strokeStyle = COL.ink; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
+    ctx.beginPath(); ctx.moveTo(xsp, top - 2 * rpx - 18); ctx.lineTo(xsp, top - 5); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = COL.ink;
+    ctx.beginPath(); ctx.moveTo(xsp - 10, top - 2 * rpx - 32); ctx.lineTo(xsp + 10, top - 2 * rpx - 32); ctx.lineTo(xsp, top - 2 * rpx - 18); ctx.closePath(); ctx.fill();
+  }
+  // sensor beam and ball
+  const xb = xs + (pos + R_BALL) * s;
+  if (last) {
+    ctx.strokeStyle = 'rgba(229,55,43,.55)'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 5]);
+    ctx.beginPath(); ctx.moveTo(xs, top - rpx); ctx.lineTo(xb - rpx, top - rpx); ctx.stroke(); ctx.setLineDash([]);
+  }
+  const g = ctx.createRadialGradient(xb - rpx * 0.35, top - rpx * 1.35, rpx * 0.15, xb, top - rpx, rpx);
+  g.addColorStop(0, '#FFC58A'); g.addColorStop(0.45, COL.ball); g.addColorStop(1, '#D8540A');
+  ctx.fillStyle = g; ctx.globalAlpha = last ? 1 : 0.35;
+  ctx.beginPath(); ctx.arc(xb, top - rpx, rpx, 0, 7); ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.restore();
+  // eje
+  ctx.fillStyle = '#C9CED6'; ctx.beginPath(); ctx.arc(PX, PY, 6, 0, 7); ctx.fill();
+  ctx.fillStyle = COL.beam; ctx.beginPath(); ctx.arc(PX, PY, 3, 0, 7); ctx.fill();
+
+  if (last) {
+    $('roPos').textContent = Math.round(last.pos) + ' mm';
+    $('roSp').textContent = Math.round(state.sp) + ' mm';
+    $('roErr').textContent = fmtSigned(Math.round(state.sp - last.pos), 0) + ' mm';
+    $('roAng').textContent = fmtSigned(u, 1) + '°';
+  } else ['roPos', 'roSp', 'roErr', 'roAng'].forEach(id => $(id).textContent = '–');
+}
+
+/* pointer: drag the target along the beam */
+let dragging = false;
+function spFromEvent(e) {
+  const r = scene.getBoundingClientRect();
+  return (e.clientX - r.left - geom.X0) / geom.s - R_BALL;
+}
+scene.addEventListener('pointerdown', e => {
+  if (state.source === 'none' || comp.state === 'run') return;
+  dragging = true; scene.classList.add('dragging'); scene.setPointerCapture(e.pointerId);
+  setSetpoint(spFromEvent(e));
+});
+scene.addEventListener('pointermove', e => { if (dragging) setSetpoint(spFromEvent(e)); });
+['pointerup', 'pointercancel'].forEach(ev => scene.addEventListener(ev, () => { dragging = false; scene.classList.remove('dragging'); }));
+
+/* =====================================================================
+   DRAWING: charts
+   ===================================================================== */
+function drawChart(c, ctx, opts) {
+  const [W, H] = fitCanvas(c, ctx);
+  ctx.clearRect(0, 0, W, H);
+  const padL = 60, padR = 14, padT = 32, padB = 22;
+  const w = W - padL - padR, h = H - padT - padB;
+  if (h < 20) return;
+  const S = state.samples;
+  const tEnd = S.length ? S[S.length - 1].t : 0, tStart = tEnd - WINDOW_S;
+  const X = t => padL + (t - tStart) / WINDOW_S * w;
+  const Y = v => padT + (1 - (v - opts.min) / (opts.max - opts.min)) * h;
+  // rejilla
+  ctx.font = '12px ' + cssVar('--font'); ctx.fillStyle = COL['ink-2']; ctx.strokeStyle = '#E3E7EC'; ctx.lineWidth = 1;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (const v of opts.ticks) { const y = Math.round(Y(v)) + 0.5; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + w, y); ctx.stroke(); ctx.fillText(opts.tickFmt(v), padL - 6, y); }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let k = 0; k <= WINDOW_S; k += 5) {
+    const x = padL + (k / WINDOW_S) * w;
+    ctx.textAlign = k === WINDOW_S ? 'right' : 'center';
+    ctx.fillText(k === WINDOW_S ? 'now' : '−' + (WINDOW_S - k) + ' s', x, padT + h + 5);
+  }
+  if (!S.length) return;
+  ctx.save(); ctx.beginPath(); ctx.rect(padL, padT - 2, w, h + 4); ctx.clip();
+  opts.draw(ctx, S, X, Y);
+  ctx.restore();
+}
+function line(ctx, S, X, Y, key, color, width, dash) {
+  ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash || []); ctx.lineJoin = 'round';
+  ctx.beginPath(); S.forEach((s, k) => { const x = X(s.t), y = Y(s[key]); k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke(); ctx.setLineDash([]);
+}
+function drawCharts() {
+  drawChart(cPos, pctx, {
+    min: cfg.posMin - 10, max: cfg.posMax + 10,
+    ticks: [50, 100, 150, 200].filter(v => v > cfg.posMin && v < cfg.posMax),
+    tickFmt: v => v + ' mm',
+    draw(ctx, S, X, Y) {
+      ctx.fillStyle = 'rgba(21,33,58,.09)';
+      ctx.beginPath(); S.forEach((s, k) => { const x = X(s.t), y = Y(s.sp + BAND_MM); k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      for (let k = S.length - 1; k >= 0; k--) ctx.lineTo(X(S[k].t), Y(S[k].sp - BAND_MM));
+      ctx.closePath(); ctx.fill();
+      line(ctx, S, X, Y, 'sp', COL.ink, 2, [6, 5]);
+      line(ctx, S, X, Y, 'pos', COL.ball, 3);
+    }
+  });
+  const um = Math.max(5, cfg.uMax);
+  drawChart(cU, uctx, {
+    min: -um, max: um, ticks: [-10, 0, 10].filter(v => Math.abs(v) < um), tickFmt: v => fmt(v, 0) + '°',
+    draw(ctx, S, X, Y) {
+      line(ctx, S, X, Y, 'p', COL.p, 1.5); line(ctx, S, X, Y, 'i', COL.i, 1.5); line(ctx, S, X, Y, 'd', COL.d, 1.5);
+      line(ctx, S, X, Y, 'u', COL.ink, 2.5);
+    }
+  });
+}
+function drawBars() {
+  const s = state.last, um = Math.max(1, cfg.uMax);
+  const set = (id, vid, v) => {
+    const el = $(id), f = clamp(v / um, -1, 1) * 50;
+    el.style.left = (f >= 0 ? 50 : 50 + f) + '%'; el.style.width = Math.abs(f) + '%';
+    $(vid).textContent = s ? fmtSigned(v, 1) + '°' : '–';
+  };
+  set('barP', 'valP', s ? s.p : 0); set('barI', 'valI', s ? s.i : 0); set('barD', 'valD', s ? s.d : 0); set('barU', 'valU', s ? s.u : 0);
+}
+
+/* =====================================================================
+   MAIN LOOP
+   ===================================================================== */
+function frame(now) {
+  simTick(now);
+  drawScene(); drawCharts(); drawBars();
+  demoTick(now); compRender();
+  if (state.source === 'serial' && state.last && now - state.lastDataMs > 1500 && $('alert').hidden)
+    showAlert('No data is arriving from the Arduino. Is the BallBeam_Expo sketch loaded?', 'nodata');
+  requestAnimationFrame(frame);
+}
+setInterval(() => { state.hz = state.hzCount; state.hzCount = 0; if (!$('op').hidden) updateOpInfo(); }, 1000);
+setInterval(coachEval, 500);
+window.addEventListener('resize', layoutSlider);
+new ResizeObserver(layoutSlider).observe($('sceneWrap'));
+
+/* Automatic reconnection: if this browser already has permission for a port it
+   connects without asking (handy on reloading the page or replugging the USB). */
+async function autoConnect() {
+  if (!('serial' in navigator)) {
+    $('serialNote').textContent = 'To connect the rig, open this page with Google Chrome or Microsoft Edge.';
+    return;
+  }
+  const ports = await navigator.serial.getPorts();
+  if (ports.length && state.source === 'none') connectSerial(ports[0]);
+  navigator.serial.addEventListener('connect', e => { if (state.source === 'none') connectSerial(e.target); });
+}
+
+syncUIFromState();
+renderReto();
+renderRank();
+compRender();
+autoConnect();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
