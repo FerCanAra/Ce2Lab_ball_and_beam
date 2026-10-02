@@ -11,7 +11,7 @@ In this project, a different ATmega328P-based implementation of the Ball and Bea
 
 ## Ball and Beam GUI
 
-A web interface is also available, allowing you to run simulations in HTML and connect to the actual model for direct interaction. Follow this [official site](Ball%20and%20Beam%20GUI/) to learn more.
+A web interface is also available, allowing you to run simulations in HTML and connect to the actual model for direct interaction. Follow this [official site](./Ball%20and%20Beam%20GUI/) to learn more.
 
 <img src="/Ball_and_Beam_GUI/gui_ball_and_beam.gif" width="350"> 
 
